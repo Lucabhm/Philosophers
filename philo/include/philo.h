@@ -6,7 +6,7 @@
 /*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 12:06:31 by lbohm             #+#    #+#             */
-/*   Updated: 2024/05/15 15:32:55 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/05/16 18:01:27 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,26 +29,20 @@ typedef struct s_data
 	int				time_to_die;
 	int				time_to_eat;
 	int				time_to_sleep;
-	int				times_to_eat;
+	int				max_eat;
 }				t_data;
 
 typedef struct s_philos
 {
 	pthread_t			philo;
+	pthread_t			check;
 	pthread_mutex_t		fork;
 	struct timeval		start;
 	struct timeval		now_death;
 	struct timeval		now_eat;
-	struct timeval		now_sleep;
-	struct timeval		now_think;
-	struct timeval		now_time;
 	int					now_times_eat;
 	int					nbr_philo;
-	int					nbr_of_philos;
-	int					max_death;
-	int					max_eat;
-	int					max_sleep;
-	int					max_times_eat;
+	struct s_data		*data;
 	struct s_philos		*next;
 }				t_philos;
 
@@ -65,15 +59,14 @@ void	*dining_room(void *philo);
 void	ft_putstr_fd(char *s, int fd);
 int		ft_atoi(const char *ascii);
 void	ft_lstadd_back(t_philos **lst, t_philos *new);
-long	calc_time(struct timeval first, struct timeval second);
-void	write_msg(int msg, long time, int nbr);
+long	calc_time(struct timeval start);
+void	write_msg(int msg, long time, int nbr, t_philos *p);
 
 // utils_2
 
 void	*check_for_death(void *p);
 void	error(char *msg, t_philos **philos);
-void	freelist(t_philos **philos);
-int		ft_isdigit(int digit);
+void	clean_up(t_philos **philos);
 int		check_input(int argc, char **argv);
 
 // test
@@ -81,6 +74,7 @@ int		check_input(int argc, char **argv);
 void	*check_for_death(void *philo);
 int		check_eat(t_philos *p);
 int		check_death(t_philos *p);
+void	waiting_room(int time_to_wait);
 
 // error msg
 

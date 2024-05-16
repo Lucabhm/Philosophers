@@ -21,7 +21,7 @@ $(OBJDIR)%.o: %.c
 
 $(NAME):	$(OBJS_PATH)
 			@echo $(BLUE)"Compiling $(NAME)..."$(DEF_COLOR)
-			@cc $(OBJS_PATH) -o $(NAME)
+			@cc $(OBJS_PATH) -o $(NAME) -fsanitize=address
 
 all:		$(NAME)
 
