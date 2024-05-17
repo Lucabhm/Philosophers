@@ -6,7 +6,7 @@
 /*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/09 14:56:16 by lbohm             #+#    #+#             */
-/*   Updated: 2024/05/16 17:26:51 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/05/17 12:04:51 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,20 +80,23 @@ long	calc_time(struct timeval start)
 
 void	write_msg(int msg, long time, int nbr, t_philos *p)
 {
-	if (!check_death(p))
+	if (!pthread_mutex_lock(&p->data->write))
 	{
-		if (msg == 1)
-			printf("%ld ms %i \e[0;33mis thinking\e[0m\n", time, nbr);
-		else if (msg == 2)
+		if (!check_death(p))
 		{
-			printf("%ld ms %i has taken a fork\n", time, nbr);
-			printf("%ld ms %i has taken a fork\n", time, nbr);
+			if (msg == 1)
+				printf("%ld ms %i \e[0;33mis thinking\e[0m\n", time, nbr);
+			else if (msg == 2)
+			{
+				printf("%ld ms %i has taken a fork\n", time, nbr);
+				printf("%ld ms %i has taken a fork\n", time, nbr);
+				printf("%ld ms %i \e[0;32mis eating\e[0m\n", time, nbr);
+			}
+			else if (msg == 4)
+				printf("%ld ms %i \e[0;34mis sleeping\e[0m\n", time, nbr);
 		}
-		else if (msg == 3)
-			printf("%ld ms %i \e[0;32mis eating\e[0m\n", time, nbr);
-		else if (msg == 4)
-			printf("%ld ms %i \e[0;34mis sleeping\e[0m\n", time, nbr);
+		if (msg == 5)
+			printf("\033[0;31m%ld ms %i died\033[0m\n", time, nbr);
+		pthread_mutex_unlock(&p->data->write);
 	}
-	if (msg == 5)
-		printf("\033[0;31m%ld ms %i is dead\033[0m\n", time, nbr);
 }

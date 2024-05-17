@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philo.h                                            :+:      :+:    :+:   */
+/*   philo_bonus.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/02/07 12:06:31 by lbohm             #+#    #+#             */
-/*   Updated: 2024/05/17 10:58:59 by lbohm            ###   ########.fr       */
+/*   Created: 2024/05/17 11:29:09 by lbohm             #+#    #+#             */
+/*   Updated: 2024/05/17 12:17:10 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PHILO_H
-# define PHILO_H
+#ifndef PHILO_BONUS_H
+# define PHILO_BONUS_H
 
 # include <stdio.h>
 # include <stdlib.h>
@@ -30,8 +30,7 @@ typedef struct s_data
 	int				time_to_eat;
 	int				time_to_sleep;
 	int				max_eat;
-	pthread_mutex_t	dead;
-	pthread_mutex_t	write;
+	
 }				t_data;
 
 typedef struct s_philos
@@ -56,9 +55,9 @@ void	waiting_room(int time_to_wait);
 
 // parsing
 
-int		check_input(int argc, char **argv);
-int		parsing(int argc, char **argv, t_data *data);
-int		create_philos(t_data *data);
+int		check_input_b(int argc, char **argv);
+int		parsing_b(int argc, char **argv, t_data *data);
+int		create_philos_b(t_data *data);
 void	error(char *msg, t_philos **philos);
 void	clean_up(t_philos **philos);
 

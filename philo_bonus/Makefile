@@ -1,4 +1,4 @@
-NAME = philo
+NAME = philo_bonus
 CFLAGS = -Wall -Wextra -Werror
 CC = cc
 RED = '\033[1;31m'
