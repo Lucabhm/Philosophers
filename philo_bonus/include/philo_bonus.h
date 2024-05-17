@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo_bonus.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
+/*   By: lucabohn <lucabohn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 11:29:09 by lbohm             #+#    #+#             */
-/*   Updated: 2024/05/17 12:17:10 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/05/17 15:43:54 by lucabohn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ void	waiting_room(int time_to_wait);
 int		check_input_b(int argc, char **argv);
 int		parsing_b(int argc, char **argv, t_data *data);
 int		create_philos_b(t_data *data);
-void	error(char *msg, t_philos **philos);
+void	error_b(char *msg, t_philos **philos);
 void	clean_up(t_philos **philos);
 
 // philo
@@ -82,5 +82,6 @@ void	write_msg(int msg, long time, int nbr, t_philos *p);
 # define ERROR_1 "Too many philos than possible\n"
 # define ERROR_2 "Allocation failed\n"
 # define ERROR_3 "Invalid argument\n"
+# define ERROR_4 "fork failed\n"
 
 #endif

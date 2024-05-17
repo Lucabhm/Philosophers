@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_bonus.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
+/*   By: lucabohn <lucabohn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 09:22:17 by lbohm             #+#    #+#             */
-/*   Updated: 2024/05/17 12:08:51 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/05/17 15:43:24 by lucabohn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ int	check_input_b(int argc, char **argv)
 	return (0);
 }
 
-void	error(char *msg, t_philos **philos)
+void	error_b(char *msg, t_philos **philos)
 {
 	if (philos)
 		clean_up(philos);
@@ -97,8 +97,6 @@ void	clean_up(t_philos **philos)
 	i = 0;
 	philo = *philos;
 	nbr_philos = philo->data->nbr_of_philos;
-	pthread_mutex_destroy(&philo->data->dead);
-	pthread_mutex_destroy(&philo->data->write);
 	while (nbr_philos > i)
 	{
 		next = philo->next;
