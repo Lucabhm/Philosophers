@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo_bonus.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
+/*   By: lbohm <lbohm@student.42heilbronn.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 11:29:09 by lbohm             #+#    #+#             */
-/*   Updated: 2024/05/17 12:17:10 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/05/27 14:57:17 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,62 +19,69 @@
 # include <unistd.h>
 # include <sys/time.h>
 # include <pthread.h>
+# include <semaphore.h>
+# include <sys/types.h>
+# include <sys/wait.h>
+# include <fcntl.h>
+#include <signal.h>
 
 // struct
 
 typedef struct s_data
 {
-	struct s_philos	*philos;
 	int				nbr_of_philos;
 	int				time_to_die;
 	int				time_to_eat;
 	int				time_to_sleep;
 	int				max_eat;
-	
+	int				*id;
+	sem_t			*forks;
+	sem_t			*write;
+	sem_t			*death;
 }				t_data;
 
 typedef struct s_philos
 {
-	pthread_t			philo;
 	pthread_t			check;
-	pthread_mutex_t		fork;
 	struct timeval		start;
 	struct timeval		now_death;
 	struct timeval		now_eat;
 	int					now_times_eat;
 	int					nbr_philo;
-	struct s_data		*data;
-	struct s_philos		*next;
+	int					pid;
+	t_data				*data;
 }				t_philos;
 
-// monitoring
+// monitoring_bonus
 
-void	*check_for_death(void *philo);
-int		check_death(t_philos *p);
-void	waiting_room(int time_to_wait);
+void	*check_for_death_b(void *philo);
+void	waiting_room_b(int time_to_wait);
+void	start_processes(t_data *data);
+void	wait_for_processes(int *nbr, int nbr_of_philos);
+void	dining_room_b(t_data *data, int i);
+void	kill_processes(t_philos *p);
 
-// parsing
+// parsing_bonus
 
 int		check_input_b(int argc, char **argv);
 int		parsing_b(int argc, char **argv, t_data *data);
-int		create_philos_b(t_data *data);
-void	error(char *msg, t_philos **philos);
-void	clean_up(t_philos **philos);
+void	create_philo_b(t_philos *p, t_data *data, int i);
+void	error(char *msg, t_data *data);
 
-// philo
+// philo_bonus
 
 int		main(int argc, char **argv);
 int		start_threads(t_data *data);
 void	*dining_room(void *philo);
 void	take_forks_and_eat(t_philos *p);
 
-// utils
+// utils_bonus
 
 void	ft_putstr_fd(char *s, int fd);
 int		ft_atoi(const char *ascii);
-void	ft_lstadd_back(t_philos **lst, t_philos *new);
-long	calc_time(struct timeval start);
-void	write_msg(int msg, long time, int nbr, t_philos *p);
+long	calc_time_b(struct timeval start);
+void	write_msg_b(int msg, long time, int nbr, t_philos *p);
+void	clean_up_b(t_data *data);
 
 // error msg
 
@@ -82,5 +89,8 @@ void	write_msg(int msg, long time, int nbr, t_philos *p);
 # define ERROR_1 "Too many philos than possible\n"
 # define ERROR_2 "Allocation failed\n"
 # define ERROR_3 "Invalid argument\n"
+# define ERROR_4 "sem_open failed\n"
+# define ERROR_5 "fork failed\n"
+# define ERROR_6 "sem failed\n"
 
 #endif

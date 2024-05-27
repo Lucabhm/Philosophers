@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
+/*   By: lbohm <lbohm@student.42heilbronn.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 12:06:23 by lbohm             #+#    #+#             */
-/*   Updated: 2024/05/17 10:58:42 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/05/27 15:37:45 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ void	*dining_room(void *philo)
 			break ;
 		take_forks_and_eat(p);
 		write_msg(4, calc_time(p->start), p->nbr_philo, p);
-		waiting_room(p->data->time_to_sleep);
+		waiting_room(p->data->time_to_sleep, p);
 		p->now_times_eat++;
 	}
 	return (NULL);
@@ -81,7 +81,7 @@ void	take_forks_and_eat(t_philos *p)
 		if (!pthread_mutex_lock(&(p)->next->fork))
 		{
 			write_msg(2, calc_time(p->start), p->nbr_philo, p);
-			waiting_room(p->data->time_to_eat);
+			waiting_room(p->data->time_to_eat, p);
 			gettimeofday(&(p)->now_eat, NULL);
 			pthread_mutex_unlock(&(p)->next->fork);
 		}

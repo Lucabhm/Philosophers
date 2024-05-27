@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
+/*   By: lbohm <lbohm@student.42heilbronn.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 12:06:31 by lbohm             #+#    #+#             */
-/*   Updated: 2024/05/17 10:58:59 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/05/27 15:37:30 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ typedef struct s_philos
 
 void	*check_for_death(void *philo);
 int		check_death(t_philos *p);
-void	waiting_room(int time_to_wait);
+void	waiting_room(int time_to_wait, t_philos *p);
 
 // parsing
 

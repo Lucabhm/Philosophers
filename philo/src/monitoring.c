@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   monitoring.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
+/*   By: lbohm <lbohm@student.42heilbronn.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 13:41:27 by lbohm             #+#    #+#             */
-/*   Updated: 2024/05/17 10:33:29 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/05/27 15:37:18 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,7 @@
 void	*check_for_death(void *philo)
 {
 	t_philos		*p;
-	int				count;
 
-	count = 0;
 	p = philo;
 	while ((p->data->max_eat > p->now_times_eat || p->data->max_eat == 0)
 		&& !check_death(p))
@@ -56,11 +54,14 @@ int	check_death(t_philos *p)
 	return (count);
 }
 
-void	waiting_room(int time_to_wait)
+void	waiting_room(int time_to_wait, t_philos *p)
 {
 	struct timeval	start;
 
-	gettimeofday(&start, NULL);
-	while (calc_time(start) < time_to_wait)
-		usleep(time_to_wait / 10);
+	if (!check_death(p))
+	{
+		gettimeofday(&start, NULL);
+		while (calc_time(start) < time_to_wait)
+			usleep(time_to_wait / 10);
+	}
 }

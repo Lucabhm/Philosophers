@@ -7,10 +7,10 @@ DEF_COLOR = '\033[0;39m'
 
 VPATH = src/
 
-SRCS = philo.c \
-		parsing.c \
-		monitoring.c \
-		utils.c
+SRCS = philo_bonus.c \
+		parsing_bonus.c \
+		monitoring_bonus.c \
+		utils_bonus.c
 OBJS = $(SRCS:.c=.o)
 OBJDIR = objs/
 OBJS_PATH = $(addprefix $(OBJDIR), $(OBJS))

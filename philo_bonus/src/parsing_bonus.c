@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_bonus.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
+/*   By: lbohm <lbohm@student.42heilbronn.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 09:22:17 by lbohm             #+#    #+#             */
-/*   Updated: 2024/05/17 12:08:51 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/05/27 14:29:38 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,35 +22,16 @@ int	parsing_b(int argc, char **argv, t_data *data)
 		data->max_eat = ft_atoi(argv[5]);
 	else
 		data->max_eat = 0;
+	data->forks = sem_open("/forks", O_CREAT | O_EXCL, 0644, data->nbr_of_philos);
+	if (data->forks == SEM_FAILED)
+		return (error(ERROR_4, data), 1);
+	data->write = sem_open("/write", O_CREAT, 0644, 1);
+	if (data->write == SEM_FAILED)
+		return (error(ERROR_4, data), 1);
+	data->death = sem_open("/death", O_CREAT, 0644, 1);
+	if (data->death == SEM_FAILED)
+		return (error(ERROR_4, data), 1);
 	return (0);
-}
-
-int	create_philos_b(t_data *data)
-{
-	int				i;
-	t_philos		*philo;
-
-	i = 0;
-	while (data->nbr_of_philos > i)
-	{
-		philo = (t_philos *)malloc (sizeof(*philo));
-		if (!philo)
-			return (error(ERROR_2, &philo), 1);
-		pthread_mutex_init(&(philo)->fork, NULL);
-		philo->nbr_philo = i + 1;
-		philo->now_eat.tv_sec = 0;
-		philo->now_eat.tv_usec = 0;
-		philo->now_death.tv_sec = 0;
-		philo->now_death.tv_usec = 0;
-		philo->start.tv_sec = 0;
-		philo->start.tv_usec = 0;
-		philo->now_times_eat = 0;
-		philo->data = data;
-		philo->next = NULL;
-		ft_lstadd_back(&data->philos, philo);
-		i++;
-	}
-	return (philo->next = data->philos, 0);
 }
 
 int	check_input_b(int argc, char **argv)
@@ -80,31 +61,30 @@ int	check_input_b(int argc, char **argv)
 	return (0);
 }
 
-void	error(char *msg, t_philos **philos)
+void	create_philo_b(t_philos *p, t_data *data, int i)
 {
-	if (philos)
-		clean_up(philos);
-	ft_putstr_fd(msg, 2);
+	p->nbr_philo = i;
+	p->now_eat.tv_sec = 0;
+	p->now_eat.tv_usec = 0;
+	p->now_death.tv_sec = 0;
+	p->now_death.tv_usec = 0;
+	p->start.tv_sec = 0;
+	p->start.tv_usec = 0;
+	p->now_times_eat = 0;
+	p->data = data;
 }
 
-void	clean_up(t_philos **philos)
+void	error(char *msg, t_data *data)
 {
-	int			nbr_philos;
-	int			i;
-	t_philos	*philo;
-	t_philos	*next;
-
-	i = 0;
-	philo = *philos;
-	nbr_philos = philo->data->nbr_of_philos;
-	pthread_mutex_destroy(&philo->data->dead);
-	pthread_mutex_destroy(&philo->data->write);
-	while (nbr_philos > i)
+	if (data)
 	{
-		next = philo->next;
-		pthread_mutex_destroy(&(philo)->fork);
-		free(philo);
-		philo = next;
-		i++;
+		sem_close(data->forks);
+		sem_close(data->write);
+		sem_close(data->death);
+		sem_unlink("/forks");
+		sem_unlink("/write");
+		sem_unlink("/death");
 	}
+	ft_putstr_fd(msg, 2);
+	exit(1);
 }
