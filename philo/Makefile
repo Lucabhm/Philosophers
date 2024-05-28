@@ -1,5 +1,5 @@
 NAME = philo
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -g
 CC = cc
 RED = '\033[1;31m'
 BLUE ='\033[1;34m'
@@ -21,7 +21,7 @@ $(OBJDIR)%.o: %.c
 
 $(NAME):	$(OBJS_PATH)
 			@echo $(BLUE)"Compiling $(NAME)..."$(DEF_COLOR)
-			@cc $(OBJS_PATH) -o $(NAME) -fsanitize=address
+			@cc $(OBJS_PATH) -o $(NAME)
 
 all:		$(NAME)
 

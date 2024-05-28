@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_bonus.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lbohm <lbohm@student.42heilbronn.de>       +#+  +:+       +#+        */
+/*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 09:22:17 by lbohm             #+#    #+#             */
-/*   Updated: 2024/05/27 15:42:06 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/05/28 14:09:35 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	parsing_b(int argc, char **argv, t_data *data)
 	data->write = sem_open("/write", O_CREAT, 0644, 1);
 	if (data->write == SEM_FAILED)
 		return (error(ERROR_4, data), 1);
-	data->death = sem_open("/death", O_CREAT, 0644, 1);
+	data->death = sem_open("/death", O_CREAT, 0644, 0);
 	if (data->death == SEM_FAILED)
 		return (error(ERROR_4, data), 1);
 	return (0);

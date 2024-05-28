@@ -6,7 +6,7 @@
 /*   By: lbohm <lbohm@student.42heilbronn.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 13:41:27 by lbohm             #+#    #+#             */
-/*   Updated: 2024/05/27 15:37:18 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/05/28 15:57:27 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,15 +17,19 @@ void	*check_for_death(void *philo)
 	t_philos		*p;
 
 	p = philo;
-	while ((p->data->max_eat > p->now_times_eat || p->data->max_eat == 0)
-		&& !check_death(p))
+	if (!pthread_mutex_lock(&p->data->checker2))
 	{
 		if (p->now_eat.tv_sec == 0)
 			gettimeofday(&(p)->now_eat, NULL);
+		pthread_mutex_unlock(&p->data->checker2);
+	}
+	while ((p->data->max_eat > p->now_times_eat || p->data->max_eat == 0))
+	{
+		if (check_death(p->data))
+			break ;
 		if (p->data->time_to_die <= calc_time(p->now_eat))
 		{
-			usleep(100);
-			if (!pthread_mutex_lock(&p->data->dead) && check_death(p) == 0)
+			if (!pthread_mutex_lock(&p->data->dead))
 			{
 				gettimeofday(&p->now_death, NULL);
 				write_msg(5, calc_time(p->start), p->nbr_philo, p);
@@ -37,31 +41,29 @@ void	*check_for_death(void *philo)
 	return (NULL);
 }
 
-int	check_death(t_philos *p)
-{
-	int	i;
-	int	count;
-
-	i = 0;
-	count = 0;
-	while (p->data->nbr_of_philos > i)
-	{
-		if (p->now_death.tv_sec)
-			count++;
-		p = p->next;
-		i++;
-	}
-	return (count);
-}
-
 void	waiting_room(int time_to_wait, t_philos *p)
 {
 	struct timeval	start;
 
-	if (!check_death(p))
+	if (!check_death(p->data))
 	{
 		gettimeofday(&start, NULL);
 		while (calc_time(start) < time_to_wait)
 			usleep(time_to_wait / 10);
 	}
+}
+
+int	check_death(t_data *data)
+{
+	if (!pthread_mutex_lock(&data->checker))
+	{
+		if (!data->check_dead)
+		{
+			pthread_mutex_unlock(&data->checker);
+			return (0);
+		}
+		else
+			pthread_mutex_unlock(&data->checker);
+	}
+	return (1);
 }

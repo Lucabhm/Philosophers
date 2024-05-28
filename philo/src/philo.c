@@ -6,7 +6,7 @@
 /*   By: lbohm <lbohm@student.42heilbronn.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 12:06:23 by lbohm             #+#    #+#             */
-/*   Updated: 2024/05/27 15:37:45 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/05/28 15:56:04 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,12 +57,17 @@ void	*dining_room(void *philo)
 
 	p = philo;
 	gettimeofday(&(p)->start, NULL);
-	gettimeofday(&(p)->now_eat, NULL);
+	if (!pthread_mutex_lock(&p->data->checker2))
+	{
+		gettimeofday(&(p)->now_eat, NULL);
+		pthread_mutex_unlock(&p->data->checker2);
+	}
 	if (p->nbr_philo % 2 == 0)
 		usleep(100);
-	while ((p->data->max_eat > p->now_times_eat || p->data->max_eat == 0)
-		&& !check_death(p))
+	while ((p->data->max_eat > p->now_times_eat || p->data->max_eat == 0))
 	{
+		if (check_death(p->data))
+			break ;
 		write_msg(1, calc_time(p->start), p->nbr_philo, p);
 		if (p->data->nbr_of_philos == 1)
 			break ;
@@ -82,7 +87,11 @@ void	take_forks_and_eat(t_philos *p)
 		{
 			write_msg(2, calc_time(p->start), p->nbr_philo, p);
 			waiting_room(p->data->time_to_eat, p);
-			gettimeofday(&(p)->now_eat, NULL);
+			if (!pthread_mutex_lock(&p->data->checker2))
+			{
+				gettimeofday(&(p)->now_eat, NULL);
+				pthread_mutex_unlock(&p->data->checker2);
+			}
 			pthread_mutex_unlock(&(p)->next->fork);
 		}
 		pthread_mutex_unlock(&(p)->fork);

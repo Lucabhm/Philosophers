@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
+/*   By: lbohm <lbohm@student.42heilbronn.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 09:22:17 by lbohm             #+#    #+#             */
-/*   Updated: 2024/05/17 10:32:55 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/05/28 15:55:34 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,9 @@ int	parsing(int argc, char **argv, t_data *data)
 		data->max_eat = 0;
 	pthread_mutex_init(&data->dead, NULL);
 	pthread_mutex_init(&data->write, NULL);
+	pthread_mutex_init(&data->checker, NULL);
+	pthread_mutex_init(&data->checker2, NULL);
+	data->check_dead = 0;
 	return (0);
 }
 
@@ -101,6 +104,8 @@ void	clean_up(t_philos **philos)
 	nbr_philos = philo->data->nbr_of_philos;
 	pthread_mutex_destroy(&philo->data->dead);
 	pthread_mutex_destroy(&philo->data->write);
+	pthread_mutex_destroy(&philo->data->checker);
+	pthread_mutex_destroy(&philo->data->checker2);
 	while (nbr_philos > i)
 	{
 		next = philo->next;

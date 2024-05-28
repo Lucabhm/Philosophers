@@ -6,7 +6,7 @@
 /*   By: lbohm <lbohm@student.42heilbronn.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/09 14:56:16 by lbohm             #+#    #+#             */
-/*   Updated: 2024/05/27 15:27:00 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/05/28 15:28:31 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ void	write_msg(int msg, long time, int nbr, t_philos *p)
 {
 	if (!pthread_mutex_lock(&p->data->write))
 	{
-		if (!check_death(p))
+		if (!check_death(p->data))
 		{
 			if (msg == 1)
 				printf("%ld ms %i \e[0;33mis thinking\e[0m\n", time, nbr);
@@ -94,9 +94,16 @@ void	write_msg(int msg, long time, int nbr, t_philos *p)
 			}
 			else if (msg == 4)
 				printf("%ld ms %i \e[0;34mis sleeping\e[0m\n", time, nbr);
+			else if (msg == 5)
+			{
+				printf("\033[0;31m%ld ms %i died\033[0m\n", time, nbr);
+				if (!pthread_mutex_lock(&p->data->checker))
+				{
+					p->data->check_dead = 1;
+					pthread_mutex_unlock(&p->data->checker);
+				}
+			}
 		}
-		if (msg == 5)
-			printf("\033[0;31m%ld ms %i died\033[0m\n", time, nbr);
 		pthread_mutex_unlock(&p->data->write);
 	}
 }

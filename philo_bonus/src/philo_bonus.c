@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo_bonus.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lbohm <lbohm@student.42heilbronn.de>       +#+  +:+       +#+        */
+/*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 11:28:36 by lbohm             #+#    #+#             */
-/*   Updated: 2024/05/27 15:42:24 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/05/28 14:05:33 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ void	start_processes(t_data *data)
 		data->id[i] = pid;
 		i++;
 	}
-	wait_for_processes(data->id, data->nbr_of_philos);
+	wait_for_processes(data, data->nbr_of_philos);
 }
 
 void	dining_room_b(t_data *data, int i)
@@ -81,7 +81,7 @@ void	dining_room_b(t_data *data, int i)
 	exit(0);
 }
 
-void	wait_for_processes(int *nbr, int nbr_of_philos)
+void	wait_for_processes(t_data *data, int nbr_of_philos)
 {
 	int	i;
 	int	status;
@@ -89,7 +89,7 @@ void	wait_for_processes(int *nbr, int nbr_of_philos)
 	i = 0;
 	while (nbr_of_philos > i)
 	{
-		waitpid(nbr[i], NULL, 0);
+		waitpid(data->id[i], NULL, 0);
 		if (WIFEXITED(status))
 			exit(WIFEXITED(status));
 		i++;

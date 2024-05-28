@@ -6,7 +6,7 @@
 /*   By: lbohm <lbohm@student.42heilbronn.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 12:06:31 by lbohm             #+#    #+#             */
-/*   Updated: 2024/05/27 15:37:30 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/05/28 15:55:12 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,9 @@ typedef struct s_data
 	int				max_eat;
 	pthread_mutex_t	dead;
 	pthread_mutex_t	write;
+	pthread_mutex_t	checker;
+	pthread_mutex_t	checker2;
+	int				check_dead;
 }				t_data;
 
 typedef struct s_philos
@@ -51,7 +54,7 @@ typedef struct s_philos
 // monitoring
 
 void	*check_for_death(void *philo);
-int		check_death(t_philos *p);
+int		check_death(t_data *data);
 void	waiting_room(int time_to_wait, t_philos *p);
 
 // parsing
