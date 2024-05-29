@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lbohm <lbohm@student.42heilbronn.de>       +#+  +:+       +#+        */
+/*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 12:06:31 by lbohm             #+#    #+#             */
-/*   Updated: 2024/05/28 15:55:12 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/05/29 15:55:32 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,10 +30,12 @@ typedef struct s_data
 	int				time_to_eat;
 	int				time_to_sleep;
 	int				max_eat;
+	struct timeval	start;
 	pthread_mutex_t	dead;
 	pthread_mutex_t	write;
-	pthread_mutex_t	checker;
-	pthread_mutex_t	checker2;
+	pthread_mutex_t	check_dead_c;
+	pthread_mutex_t	now_eat_c;
+	pthread_mutex_t	now_times_eat_c;
 	int				check_dead;
 }				t_data;
 
@@ -42,8 +44,6 @@ typedef struct s_philos
 	pthread_t			philo;
 	pthread_t			check;
 	pthread_mutex_t		fork;
-	struct timeval		start;
-	struct timeval		now_death;
 	struct timeval		now_eat;
 	int					now_times_eat;
 	int					nbr_philo;
@@ -53,32 +53,33 @@ typedef struct s_philos
 
 // monitoring
 
-void	*check_for_death(void *philo);
-int		check_death(t_data *data);
-void	waiting_room(int time_to_wait, t_philos *p);
+void			*check_for_death(void *philo);
+void			waiting_room(int time_to_wait, t_philos *p);
+int				check_with_mutex(t_philos *p, int check);
+struct timeval	check_with_mutex_2(t_philos *p);
 
 // parsing
 
-int		check_input(int argc, char **argv);
-int		parsing(int argc, char **argv, t_data *data);
-int		create_philos(t_data *data);
-void	error(char *msg, t_philos **philos);
-void	clean_up(t_philos **philos);
+int				check_input(int argc, char **argv);
+int				parsing(int argc, char **argv, t_data *data);
+int				create_philos(t_data *data);
+void			error(char *msg, t_philos **philos);
+void			clean_up(t_philos **philos);
 
 // philo
 
-int		main(int argc, char **argv);
-int		start_threads(t_data *data);
-void	*dining_room(void *philo);
-void	take_forks_and_eat(t_philos *p);
+int				main(int argc, char **argv);
+int				start_threads(t_data *data);
+void			*dining_room(void *philo);
+void			take_forks_and_eat(t_philos *p);
 
 // utils
 
-void	ft_putstr_fd(char *s, int fd);
-int		ft_atoi(const char *ascii);
-void	ft_lstadd_back(t_philos **lst, t_philos *new);
-long	calc_time(struct timeval start);
-void	write_msg(int msg, long time, int nbr, t_philos *p);
+void			ft_putstr_fd(char *s, int fd);
+int				ft_atoi(const char *ascii);
+void			ft_lstadd_back(t_philos **lst, t_philos *new);
+long			calc_time(struct timeval start);
+void			write_msg(int msg, int nbr, t_philos *p);
 
 // error msg
 

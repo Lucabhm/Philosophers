@@ -1,5 +1,5 @@
 NAME = philo
-CFLAGS = -Wall -Wextra -Werror -g
+CFLAGS = -Wall -Wextra -Werror
 CC = cc
 RED = '\033[1;31m'
 BLUE ='\033[1;34m'

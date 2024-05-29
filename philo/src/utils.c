@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lbohm <lbohm@student.42heilbronn.de>       +#+  +:+       +#+        */
+/*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/09 14:56:16 by lbohm             #+#    #+#             */
-/*   Updated: 2024/05/28 15:28:31 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/05/29 15:55:21 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,12 +78,16 @@ long	calc_time(struct timeval start)
 	return (now - start_time);
 }
 
-void	write_msg(int msg, long time, int nbr, t_philos *p)
+void	write_msg(int msg, int nbr, t_philos *p)
 {
+	long	time;
+
+	time = 0;
 	if (!pthread_mutex_lock(&p->data->write))
 	{
-		if (!check_death(p->data))
+		if (!check_with_mutex(p, 1))
 		{
+			time = calc_time(p->data->start);
 			if (msg == 1)
 				printf("%ld ms %i \e[0;33mis thinking\e[0m\n", time, nbr);
 			else if (msg == 2)
@@ -97,10 +101,10 @@ void	write_msg(int msg, long time, int nbr, t_philos *p)
 			else if (msg == 5)
 			{
 				printf("\033[0;31m%ld ms %i died\033[0m\n", time, nbr);
-				if (!pthread_mutex_lock(&p->data->checker))
+				if (!pthread_mutex_lock(&p->data->check_dead_c))
 				{
 					p->data->check_dead = 1;
-					pthread_mutex_unlock(&p->data->checker);
+					pthread_mutex_unlock(&p->data->check_dead_c);
 				}
 			}
 		}
