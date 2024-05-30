@@ -6,7 +6,7 @@
 /*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/09 14:56:16 by lbohm             #+#    #+#             */
-/*   Updated: 2024/05/29 15:55:21 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/05/30 08:39:12 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,25 +88,7 @@ void	write_msg(int msg, int nbr, t_philos *p)
 		if (!check_with_mutex(p, 1))
 		{
 			time = calc_time(p->data->start);
-			if (msg == 1)
-				printf("%ld ms %i \e[0;33mis thinking\e[0m\n", time, nbr);
-			else if (msg == 2)
-			{
-				printf("%ld ms %i has taken a fork\n", time, nbr);
-				printf("%ld ms %i has taken a fork\n", time, nbr);
-				printf("%ld ms %i \e[0;32mis eating\e[0m\n", time, nbr);
-			}
-			else if (msg == 4)
-				printf("%ld ms %i \e[0;34mis sleeping\e[0m\n", time, nbr);
-			else if (msg == 5)
-			{
-				printf("\033[0;31m%ld ms %i died\033[0m\n", time, nbr);
-				if (!pthread_mutex_lock(&p->data->check_dead_c))
-				{
-					p->data->check_dead = 1;
-					pthread_mutex_unlock(&p->data->check_dead_c);
-				}
-			}
+			msgs(msg, time, nbr, p);
 		}
 		pthread_mutex_unlock(&p->data->write);
 	}

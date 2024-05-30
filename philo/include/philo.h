@@ -6,7 +6,7 @@
 /*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 12:06:31 by lbohm             #+#    #+#             */
-/*   Updated: 2024/05/29 15:55:32 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/05/30 11:13:28 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,6 @@ typedef struct s_data
 typedef struct s_philos
 {
 	pthread_t			philo;
-	pthread_t			check;
 	pthread_mutex_t		fork;
 	struct timeval		now_eat;
 	int					now_times_eat;
@@ -57,6 +56,7 @@ void			*check_for_death(void *philo);
 void			waiting_room(int time_to_wait, t_philos *p);
 int				check_with_mutex(t_philos *p, int check);
 struct timeval	check_with_mutex_2(t_philos *p);
+void			msgs(int msg, long time, int nbr, t_philos *p);
 
 // parsing
 

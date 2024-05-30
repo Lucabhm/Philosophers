@@ -6,7 +6,7 @@
 /*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 13:41:27 by lbohm             #+#    #+#             */
-/*   Updated: 2024/05/29 15:55:28 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/05/30 12:26:04 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,21 +17,16 @@ void	*check_for_death(void *philo)
 	t_philos		*p;
 
 	p = philo;
-	if (!pthread_mutex_lock(&p->data->now_eat_c))
-	{
-		if (p->now_eat.tv_sec == 0)
-			gettimeofday(&p->now_eat, NULL);
-		pthread_mutex_unlock(&p->data->now_eat_c);
-	}
 	while ((p->data->max_eat > check_with_mutex(p, 2) || p->data->max_eat == 0))
 	{
-		if (!!check_with_mutex(p, 1))
+		if (check_with_mutex(p, 1))
 			break ;
 		if (p->data->time_to_die <= calc_time(check_with_mutex_2(p)))
 		{
 			write_msg(5, p->nbr_philo, p);
 			return (NULL);
 		}
+		p = p->next;
 	}
 	return (NULL);
 }
@@ -61,7 +56,7 @@ int	check_with_mutex(t_philos *p, int check)
 			pthread_mutex_unlock(&p->data->check_dead_c);
 		}
 	}
-	if (check == 2)
+	if (check == 2 && p->data->max_eat != 0)
 	{
 		if (!pthread_mutex_lock(&p->data->now_times_eat_c))
 		{
@@ -84,4 +79,25 @@ struct timeval	check_with_mutex_2(t_philos *p)
 		pthread_mutex_unlock(&p->data->now_eat_c);
 	}
 	return (ret);
+}
+
+void	msgs(int msg, long time, int nbr, t_philos *p)
+{
+	if (msg == 1)
+		printf("%ld ms %i \e[0;33mis thinking\e[0m\n", time, nbr);
+	else if (msg == 2)
+		printf("%ld ms %i has taken a fork\n", time, nbr);
+	else if (msg == 3)
+		printf("%ld ms %i \e[0;32mis eating\e[0m\n", time, nbr);
+	else if (msg == 4)
+		printf("%ld ms %i \e[0;34mis sleeping\e[0m\n", time, nbr);
+	else if (msg == 5)
+	{
+		printf("\033[0;31m%ld ms %i died\033[0m\n", time, nbr);
+		if (!pthread_mutex_lock(&p->data->check_dead_c))
+		{
+			p->data->check_dead = 1;
+			pthread_mutex_unlock(&p->data->check_dead_c);
+		}
+	}
 }

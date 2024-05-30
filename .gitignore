@@ -3,3 +3,4 @@ objs
 philo
 philo_bonus
 .devcontainer
+.vscode
