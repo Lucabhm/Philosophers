@@ -6,7 +6,7 @@
 /*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 09:22:17 by lbohm             #+#    #+#             */
-/*   Updated: 2024/05/29 14:42:33 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/06/03 15:35:51 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ int	parsing(int argc, char **argv, t_data *data)
 	pthread_mutex_init(&data->check_dead_c, NULL);
 	pthread_mutex_init(&data->now_eat_c, NULL);
 	pthread_mutex_init(&data->now_times_eat_c, NULL);
+	data->lastphilo = 0;
 	data->check_dead = 0;
 	return (0);
 }
@@ -43,6 +44,7 @@ int	create_philos(t_data *data)
 		if (!philo)
 			return (error(ERROR_2, &philo), 1);
 		pthread_mutex_init(&(philo)->fork, NULL);
+		pthread_mutex_init(&(philo)->now_eat_test, NULL);
 		philo->nbr_philo = i + 1;
 		philo->now_eat.tv_sec = 0;
 		philo->now_eat.tv_usec = 0;

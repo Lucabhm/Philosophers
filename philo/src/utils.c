@@ -6,7 +6,7 @@
 /*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/09 14:56:16 by lbohm             #+#    #+#             */
-/*   Updated: 2024/05/30 08:39:12 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/06/03 12:23:03 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,18 +78,18 @@ long	calc_time(struct timeval start)
 	return (now - start_time);
 }
 
-void	write_msg(int msg, int nbr, t_philos *p)
-{
-	long	time;
+// void	write_msg(int msg, int nbr, t_philos *p)
+// {
+// 	long	time;
 
-	time = 0;
-	if (!pthread_mutex_lock(&p->data->write))
-	{
-		if (!check_with_mutex(p, 1))
-		{
-			time = calc_time(p->data->start);
-			msgs(msg, time, nbr, p);
-		}
-		pthread_mutex_unlock(&p->data->write);
-	}
-}
+// 	time = 0;
+// 	if (!pthread_mutex_lock(&p->data->write))
+// 	{
+// 		if (!check_with_mutex(p, 1))
+// 		{
+// 			time = calc_time(p->data->start);
+// 			// msgs(msg, time, nbr, p);
+// 		}
+// 		pthread_mutex_unlock(&p->data->write);
+// 	}
+// }

@@ -6,7 +6,7 @@
 /*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 12:06:31 by lbohm             #+#    #+#             */
-/*   Updated: 2024/05/30 11:13:28 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/06/03 15:58:30 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ typedef struct s_data
 	int				time_to_eat;
 	int				time_to_sleep;
 	int				max_eat;
+	int				lastphilo;
 	struct timeval	start;
 	pthread_mutex_t	dead;
 	pthread_mutex_t	write;
@@ -43,7 +44,9 @@ typedef struct s_philos
 {
 	pthread_t			philo;
 	pthread_mutex_t		fork;
+	pthread_mutex_t		now_eat_test;
 	struct timeval		now_eat;
+	struct timeval		now_eat_test;
 	int					now_times_eat;
 	int					nbr_philo;
 	struct s_data		*data;
@@ -56,7 +59,13 @@ void			*check_for_death(void *philo);
 void			waiting_room(int time_to_wait, t_philos *p);
 int				check_with_mutex(t_philos *p, int check);
 struct timeval	check_with_mutex_2(t_philos *p);
-void			msgs(int msg, long time, int nbr, t_philos *p);
+// void			msgs(int msg, long time, int nbr, t_philos *p);
+void			msg_thinking(t_philos *p);
+void			msg_sleeping(t_philos *p);
+void			msg_fork(t_philos *p);
+void			msg_eating(t_philos *p);
+void			msg_test(t_philos *p);
+void			msg_dead(t_philos *p);
 
 // parsing
 

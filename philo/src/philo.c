@@ -6,7 +6,7 @@
 /*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 12:06:23 by lbohm             #+#    #+#             */
-/*   Updated: 2024/05/30 12:34:23 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/06/03 15:58:41 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,13 +59,18 @@ void	*dining_room(void *philo)
 
 	p = philo;
 	gettimeofday(&p->now_eat, NULL);
-	if (p->nbr_philo % 2 == 0)
-		usleep(500);
-	while ((p->data->max_eat > check_with_mutex(p, 2) || p->data->max_eat == 0))
+	if (p->nbr_philo == p->data->nbr_of_philos)
+		p->data->lastphilo = 1;
+	while (p->data->lastphilo == 0 && p->nbr_philo % 2 == 0)
+		usleep(50);
+	// if (p->nbr_philo % 2 != 0)
+	// 	usleep(2000);
+	while (p->data->max_eat == 0 || p->data->max_eat > check_with_mutex(p, 2))
 	{
 		if (check_with_mutex(p, 1))
 			break ;
-		write_msg(1, p->nbr_philo, p);
+		msg_thinking(p);
+		// write_msg(1, p->nbr_philo, p);
 		if (p->data->nbr_of_philos == 1)
 			break ;
 		take_forks_and_eat(p);
@@ -75,24 +80,29 @@ void	*dining_room(void *philo)
 
 void	take_forks_and_eat(t_philos *p)
 {
-	if (!pthread_mutex_lock(&p->next->fork))
+	if (!pthread_mutex_lock(&p->fork))
 	{
-		if (!pthread_mutex_lock(&p->fork))
+		msg_fork(p);
+		if (!pthread_mutex_lock(&p->next->fork))
 		{
-			write_msg(2, p->nbr_philo, p);
-			write_msg(2, p->nbr_philo, p);
-			write_msg(3, p->nbr_philo, p);
+			msg_fork(p);
+			msg_eating(p);
+			// write_msg(2, p->nbr_philo, p);
+			// write_msg(2, p->nbr_philo, p);
+			// write_msg(3, p->nbr_philo, p);
 			waiting_room(p->data->time_to_eat, p);
-			if (!pthread_mutex_lock(&p->data->now_eat_c))
-			{
-				gettimeofday(&(p)->now_eat, NULL);
-				pthread_mutex_unlock(&p->data->now_eat_c);
-			}
-			pthread_mutex_unlock(&p->fork);
+			// if (!pthread_mutex_lock(&p->now_eat_test))
+			// {
+			// 	gettimeofday(&(p)->now_eat, NULL);
+			// 	pthread_mutex_unlock(&p->now_eat_test);
+			// }
+			pthread_mutex_unlock(&p->next->fork);
 		}
-		pthread_mutex_unlock(&p->next->fork);
+		pthread_mutex_unlock(&p->fork);
+		msg_test(p);
 	}
-	write_msg(4, p->nbr_philo, p);
+	msg_sleeping(p);
+	// write_msg(4, p->nbr_philo, p);
 	waiting_room(p->data->time_to_sleep, p);
 	if (!pthread_mutex_lock(&p->data->now_times_eat_c))
 	{
