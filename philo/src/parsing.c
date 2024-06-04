@@ -6,7 +6,7 @@
 /*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 09:22:17 by lbohm             #+#    #+#             */
-/*   Updated: 2024/06/03 15:35:51 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/06/04 15:00:12 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,10 @@ int	parsing(int argc, char **argv, t_data *data)
 	pthread_mutex_init(&data->dead, NULL);
 	pthread_mutex_init(&data->write, NULL);
 	pthread_mutex_init(&data->check_dead_c, NULL);
-	pthread_mutex_init(&data->now_eat_c, NULL);
+	pthread_mutex_init(&data->time, NULL);
 	pthread_mutex_init(&data->now_times_eat_c, NULL);
+	data->jetzt.tv_sec = 0;
+	data->jetzt.tv_usec = 0;
 	data->lastphilo = 0;
 	data->check_dead = 0;
 	return (0);
@@ -45,10 +47,13 @@ int	create_philos(t_data *data)
 			return (error(ERROR_2, &philo), 1);
 		pthread_mutex_init(&(philo)->fork, NULL);
 		pthread_mutex_init(&(philo)->now_eat_test, NULL);
+		philo->now_time.tv_sec = 0;
+		philo->now_time.tv_usec = 0;
 		philo->nbr_philo = i + 1;
 		philo->now_eat.tv_sec = 0;
 		philo->now_eat.tv_usec = 0;
 		philo->now_times_eat = 0;
+		philo->now_eat_test2 = 0;
 		philo->data = data;
 		philo->next = NULL;
 		ft_lstadd_back(&data->philos, philo);
@@ -104,7 +109,7 @@ void	clean_up(t_philos **philos)
 	pthread_mutex_destroy(&philo->data->dead);
 	pthread_mutex_destroy(&philo->data->write);
 	pthread_mutex_destroy(&philo->data->check_dead_c);
-	pthread_mutex_destroy(&philo->data->now_eat_c);
+	// pthread_mutex_destroy(&philo->data->now_eat_c);
 	while (nbr_philos > i)
 	{
 		next = philo->next;

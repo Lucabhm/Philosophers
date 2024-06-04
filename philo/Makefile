@@ -1,5 +1,5 @@
 NAME = philo
-CFLAGS = -Wall -Wextra -Werror
+# CFLAGS = -Wall -Wextra -Werror
 CC = cc
 FILES = $(shell find . -type f -name "*.c" | wc -l | sed 's/^[[:space:]]*//;s/[[:space:]]*$$//')
 CALC = $(shell echo $$((($(COUNT) * 100) / $(FILES))))

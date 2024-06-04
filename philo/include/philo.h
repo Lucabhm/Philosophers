@@ -6,7 +6,7 @@
 /*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 12:06:31 by lbohm             #+#    #+#             */
-/*   Updated: 2024/06/03 15:58:30 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/06/04 14:48:39 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,11 +31,12 @@ typedef struct s_data
 	int				time_to_sleep;
 	int				max_eat;
 	int				lastphilo;
+	struct timeval	jetzt;
+	pthread_mutex_t	time;
 	struct timeval	start;
 	pthread_mutex_t	dead;
 	pthread_mutex_t	write;
 	pthread_mutex_t	check_dead_c;
-	pthread_mutex_t	now_eat_c;
 	pthread_mutex_t	now_times_eat_c;
 	int				check_dead;
 }				t_data;
@@ -46,7 +47,10 @@ typedef struct s_philos
 	pthread_mutex_t		fork;
 	pthread_mutex_t		now_eat_test;
 	struct timeval		now_eat;
-	struct timeval		now_eat_test;
+	struct timeval		now_time;
+	struct timeval		now_time2;
+	int					now_eat_test2;
+	struct timeval		now_eat_test1;
 	int					now_times_eat;
 	int					nbr_philo;
 	struct s_data		*data;
@@ -58,14 +62,16 @@ typedef struct s_philos
 void			*check_for_death(void *philo);
 void			waiting_room(int time_to_wait, t_philos *p);
 int				check_with_mutex(t_philos *p, int check);
-struct timeval	check_with_mutex_2(t_philos *p);
-// void			msgs(int msg, long time, int nbr, t_philos *p);
+long			check_with_mutex_2(t_philos *p);
+long			check_with_mutex_3(t_philos *p);
+void			msgs(int msg, long time, int nbr, t_philos *p);
 void			msg_thinking(t_philos *p);
 void			msg_sleeping(t_philos *p);
 void			msg_fork(t_philos *p);
 void			msg_eating(t_philos *p);
 void			msg_test(t_philos *p);
 void			msg_dead(t_philos *p);
+void			*get_time_test(void *data);
 
 // parsing
 
@@ -87,7 +93,8 @@ void			take_forks_and_eat(t_philos *p);
 void			ft_putstr_fd(char *s, int fd);
 int				ft_atoi(const char *ascii);
 void			ft_lstadd_back(t_philos **lst, t_philos *new);
-long			calc_time(struct timeval start);
+long			calc_time(struct timeval start, t_philos *p);
+long			get_time(void);
 void			write_msg(int msg, int nbr, t_philos *p);
 
 // error msg
