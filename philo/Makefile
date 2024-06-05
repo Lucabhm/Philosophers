@@ -14,7 +14,8 @@ VPATH = src/
 SRCS = philo.c \
 		parsing.c \
 		monitoring.c \
-		utils.c
+		utils.c \
+		msgs.c
 OBJS = $(SRCS:.c=.o)
 OBJDIR = objs/
 OBJS_PATH = $(addprefix $(OBJDIR), $(OBJS))
