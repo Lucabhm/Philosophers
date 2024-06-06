@@ -6,7 +6,7 @@
 /*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 12:06:23 by lbohm             #+#    #+#             */
-/*   Updated: 2024/06/05 19:06:52 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/06/06 11:17:04 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,16 +66,18 @@ void	*dining_room(void *philo)
 	msg_thinking(p);
 	if (p->nbr_philo % 2 != 0)
 		waiting_room(p->data->time_to_eat / 2, p);
-	if (p->data->nbr_of_philos == 1)
-		return (NULL);
-	while (p->data->max_eat == 0 || p->data->max_eat > check_with_mutex(p, 2))
+	while ((p->data->max_eat == 0 && p->data->nbr_of_philos != 1)
+		|| p->data->max_eat > check_with_mutex(p, 2))
 	{
 		if (check_with_mutex(p, 1))
 			break ;
-		if (p->nbr_philo == p->data->nbr_of_philos)
+		if (p->nbr_philo % 2 == 0)
 			take_forks_and_eat(p, &p->next->fork, &p->fork);
 		else
+		{
+			usleep(500);
 			take_forks_and_eat(p, &p->fork, &p->next->fork);
+		}
 	}
 	return (NULL);
 }
@@ -83,13 +85,11 @@ void	*dining_room(void *philo)
 void	take_forks_and_eat(t_philos *p,
 	pthread_mutex_t *fork1, pthread_mutex_t *fork2)
 {
-	pthread_mutex_lock(&p->data->take);
 	if (!pthread_mutex_lock(fork1))
 	{
 		msg_fork(p);
 		if (!pthread_mutex_lock(fork2))
 		{
-			pthread_mutex_unlock(&p->data->take);
 			msg_fork(p);
 			msg_eating(p);
 			waiting_room(p->data->time_to_eat, p);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo_bonus.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
+/*   By: lbohm <lbohm@student.42heilbronn.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 11:28:36 by lbohm             #+#    #+#             */
-/*   Updated: 2024/05/28 14:05:33 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/06/06 14:19:28 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ void	start_processes(t_data *data)
 	int			i;
 
 	i = 0;
+	gettimeofday(&data->start, NULL);
 	while (data->nbr_of_philos > i)
 	{
 		pid = fork();
@@ -36,7 +37,7 @@ void	start_processes(t_data *data)
 			error(ERROR_5, data);
 		if (pid == 0)
 			dining_room_b(data, i + 1);
-		data->id[i] = pid;
+		data->ids[i] = pid;
 		i++;
 	}
 	wait_for_processes(data, data->nbr_of_philos);
@@ -48,37 +49,56 @@ void	dining_room_b(t_data *data, int i)
 
 	create_philo_b(&p, data, i);
 	pthread_create(&p.check, NULL, check_for_death_b, &p);
-	gettimeofday(&p.start, NULL);
-	gettimeofday(&p.now_eat, NULL);
-	if (p.nbr_philo % 2 == 0)
-		usleep(100);
-	while (data->max_eat > p.now_times_eat || data->max_eat == 0)
+	if (!sem_wait(p.now_eat_lock))
 	{
-		write_msg_b(1, calc_time_b(p.start), p.nbr_philo, &p);
-		if (sem_wait(data->forks) == -1)
-			error(ERROR_6, data);
-		else
-		{
-			if (sem_wait(data->forks) == -1)
-			{
-				sem_post(data->forks);
-				error(ERROR_6, data);
-			}
-			else
-			{
-				write_msg_b(2, calc_time_b(p.start), p.nbr_philo, &p);
-				waiting_room_b(data->time_to_eat);
-				gettimeofday(&p.now_eat, NULL);
-				sem_post(data->forks);
-				sem_post(data->forks);
-			}
-		}
-		write_msg_b(4, calc_time_b(p.start), p.nbr_philo, &p);
-		waiting_room_b(data->time_to_sleep);
+		if (p.now_eat.tv_sec == 0)
+			gettimeofday(&p.now_eat, NULL);
+		sem_post(p.now_eat_lock);
+	}
+	msg_thinking_b(&p);
+	if (p.nbr_philo % 2 != 0)
+		waiting_room_b(p.data->time_to_eat / 2, &p);
+	while (p.data->max_eat == 0 || p.data->max_eat > check_with_mutex_b(&p, 2))
+	{
+		if (check_with_mutex_b(&p, 1))
+			break ;
+		take_forks_and_eat_b(data, &p);
+		msg_sleeping_b(&p);
+		waiting_room_b(data->time_to_sleep, &p);
+		msg_thinking_b(&p);
+		usleep(500);
 		p.now_times_eat++;
 	}
 	pthread_join(p.check, NULL);
-	exit(0);
+	exit(p.data->check_dead);
+}
+
+void	take_forks_and_eat_b(t_data *data, t_philos *p)
+{
+	if (sem_wait(data->forks) == -1)
+		error(ERROR_6, data);
+	else
+	{
+		msg_fork_b(p);
+		if (sem_wait(data->forks) == -1)
+		{
+			sem_post(data->forks);
+			error(ERROR_6, data);
+		}
+		else
+		{
+			msg_fork_b(p);
+			msg_eating_b(p);
+			waiting_room_b(data->time_to_eat, p);
+			if (!sem_wait(p->now_eat_lock))
+			{
+				gettimeofday(&p->now_eat, NULL);
+				sem_post(p->now_eat_lock);
+			}
+			sem_post(data->forks);
+			sem_post(data->forks);
+		}
+	}
 }
 
 void	wait_for_processes(t_data *data, int nbr_of_philos)
@@ -89,9 +109,12 @@ void	wait_for_processes(t_data *data, int nbr_of_philos)
 	i = 0;
 	while (nbr_of_philos > i)
 	{
-		waitpid(data->id[i], NULL, 0);
+		waitpid(data->ids[i], &status, 0);
 		if (WIFEXITED(status))
+		{
+			kill_processes(data);
 			exit(WIFEXITED(status));
+		}
 		i++;
 	}
 }

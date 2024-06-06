@@ -15,7 +15,8 @@ VPATH = src/
 SRCS = philo_bonus.c \
 		parsing_bonus.c \
 		monitoring_bonus.c \
-		utils_bonus.c
+		utils_bonus.c \
+		msgs_bonus.c
 OBJS = $(SRCS:.c=.o)
 OBJDIR = objs/
 OBJS_PATH = $(addprefix $(OBJDIR), $(OBJS))
@@ -33,16 +34,16 @@ $(NAME):	msg_mand $(OBJS_PATH)
 all:		$(NAME)
 
 clean:
-			@echo $(RED)"Cleaning object files..."$(DEF_COLOR)
+			@echo "$(RED)Cleaning object files...$(DEF_COLOR)"
 			@rm -rf $(OBJDIR)
 
 fclean:		clean
-			@echo $(RED)"Cleaning executable files..."$(DEF_COLOR)
+			@echo "$(RED)Cleaning executable files...$(DEF_COLOR)"
 			@rm -f $(NAME)
 
 re:			fclean all
 
 msg_mand:
-			@echo "$(YELLOW)Compiling Philosopher Mandotory$(DEF_COLOR)"
+			@echo "$(YELLOW)Compiling Philosopher Bonus$(DEF_COLOR)"
 
 .PHONY: all clean fclean re

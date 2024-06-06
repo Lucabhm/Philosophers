@@ -6,7 +6,7 @@
 /*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/09 14:56:16 by lbohm             #+#    #+#             */
-/*   Updated: 2024/06/05 16:47:49 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/06/06 11:53:15 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,18 +64,6 @@ void	ft_lstadd_back(t_philos **lst, t_philos *new)
 			now = now->next;
 		now->next = new;
 	}
-}
-
-long	calc_time(struct timeval start, t_philos *p)
-{
-	long			start_time;
-	long			now;
-	struct timeval	now_time;
-
-	gettimeofday(&now_time, NULL);
-	now = (now_time.tv_sec * 1000) + (now_time.tv_usec / 1000);
-	start_time = start.tv_sec * 1000 + (start.tv_usec / 1000);
-	return (now - start_time);
 }
 
 long	get_time(void)

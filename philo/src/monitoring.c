@@ -6,7 +6,7 @@
 /*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 13:41:27 by lbohm             #+#    #+#             */
-/*   Updated: 2024/06/05 18:33:04 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/06/06 14:04:59 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	*check_for_death(void *philo)
 {
-	t_philos		*p;
+	t_philos	*p;
 
 	p = philo;
 	while (p->data->max_eat == 0 || p->data->max_eat > check_with_mutex(p, 2))
