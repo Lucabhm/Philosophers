@@ -1,6 +1,4 @@
 .DS_Store
 objs
-philo
-philo_bonus
 .devcontainer
 .vscode
