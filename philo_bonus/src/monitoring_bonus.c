@@ -3,37 +3,36 @@
 /*                                                        :::      ::::::::   */
 /*   monitoring_bonus.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lbohm <lbohm@student.42heilbronn.de>       +#+  +:+       +#+        */
+/*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 11:43:45 by lbohm             #+#    #+#             */
-/*   Updated: 2024/06/06 14:12:54 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/06/07 11:17:36 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/philo_bonus.h"
 
-void	*check_for_death_b(void *philo)
+void	*check_for_death_b(void *data)
 {
-	t_philos	*p;
+	t_data	*d;
 
-	p = philo;
-	while (p->data->max_eat == 0 || p->data->max_eat > check_with_mutex_b(p, 2))
+	d = data;
+	while (d->max_eat == 0 || d->max_eat > check_with_mutex_b(d, 2))
 	{
-		if (p->data->time_to_die <= (get_time_b() - check_with_mutex_2_b(p)))
+		if (d->time_to_die <= (get_time_b() - check_with_mutex_2_b(&d->p)))
 		{
-			msg_dead_b(p);
-			fprintf(stderr, "dead\n");
+			msg_dead_b(d);
 			return (NULL);
 		}
 	}
 	return (NULL);
 }
 
-void	waiting_room_b(int time_to_wait, t_philos *p)
+void	waiting_room_b(int time_to_wait, t_data *data)
 {
 	struct timeval	now_time;
 
-	if (!check_with_mutex_b(p, 1))
+	if (!check_with_mutex_b(data, 1))
 	{
 		gettimeofday(&now_time, NULL);
 		while ((get_time_b() - ((now_time.tv_sec * 1000)
@@ -42,25 +41,25 @@ void	waiting_room_b(int time_to_wait, t_philos *p)
 	}
 }
 
-int	check_with_mutex_b(t_philos *p, int check)
+int	check_with_mutex_b(t_data *data, int check)
 {
 	int	ret;
 
 	ret = 0;
 	if (check == 1)
 	{
-		if (!sem_wait(p->data->check_dead_c))
+		if (!sem_wait(data->check_dead_c))
 		{
-			ret = p->data->check_dead;
-			sem_post(p->data->check_dead_c);
+			ret = data->check_dead;
+			sem_post(data->check_dead_c);
 		}
 	}
 	if (check == 2)
 	{
-		if (!sem_wait(p->data->now_times_eat_c))
+		if (!sem_wait(data->now_times_eat_c))
 		{
-			ret = p->now_times_eat;
-			sem_post(p->data->now_times_eat_c);
+			ret = data->p.now_times_eat;
+			sem_post(data->now_times_eat_c);
 		}
 	}
 	return (ret);

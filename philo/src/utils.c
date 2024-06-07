@@ -6,7 +6,7 @@
 /*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/09 14:56:16 by lbohm             #+#    #+#             */
-/*   Updated: 2024/06/06 11:53:15 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/06/07 16:04:14 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,5 +71,5 @@ long	get_time(void)
 	struct timeval	now_time;
 
 	gettimeofday(&now_time, NULL);
-	return (((now_time.tv_sec * 1000) + (now_time.tv_usec / 1000)));
+	return (now_time.tv_sec * 1000 + now_time.tv_usec / 1000);
 }

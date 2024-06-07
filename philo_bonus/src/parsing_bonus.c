@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_bonus.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lbohm <lbohm@student.42heilbronn.de>       +#+  +:+       +#+        */
+/*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 09:22:17 by lbohm             #+#    #+#             */
-/*   Updated: 2024/06/06 13:55:03 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/06/07 11:09:46 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/philo_bonus.h"
 
-int	parsing_b(int argc, char **argv, t_data *data)
+void	parsing_b(int argc, char **argv, t_data *data)
 {
 	data->nbr_of_philos = ft_atoi(argv[1]);
 	data->time_to_die = ft_atoi(argv[2]);
@@ -28,70 +28,31 @@ int	parsing_b(int argc, char **argv, t_data *data)
 	data->ids = (int *)malloc (data->nbr_of_philos * (sizeof(int)));
 	if (!data->ids)
 		error(ERROR_2, data);
-	data->forks = sem_open("/forks", O_CREAT | O_EXCL, 0644, data->nbr_of_philos);
-	if (data->forks == SEM_FAILED)
-	{
-		if (errno == EEXIST)
-		{
-			sem_close(data->forks);
-			sem_unlink("/forks");
-			data->forks = sem_open("/forks", O_CREAT | O_EXCL, 0644, data->nbr_of_philos);
-		}
-		else
-			error(ERROR_4, data);
-	}
-	data->write = sem_open("/write", O_CREAT | O_EXCL, 0644, 1);
-	if (data->write == SEM_FAILED)
-	{
-		if (errno == EEXIST)
-		{
-			sem_close(data->write);
-			sem_unlink("/write");
-			data->write = sem_open("/write", O_CREAT | O_EXCL, 0644, 1);
-		}
-		else
-			error(ERROR_4, data);
-	}
-	data->death = sem_open("/death", O_CREAT | O_EXCL, 0644, 1);
-	if (data->death == SEM_FAILED)
-	{
-		if (errno == EEXIST)
-		{
-			sem_close(data->death);
-			sem_unlink("/death");
-			data->death = sem_open("/death", O_CREAT | O_EXCL, 0644, 1);
-		}
-		else
-			error(ERROR_4, data);
-	}
-	data->check_dead_c = sem_open("/check_dead", O_CREAT | O_EXCL, 0644, 1);
-	if (data->check_dead_c == SEM_FAILED)
-	{
-		if (errno == EEXIST)
-		{
-			sem_close(data->check_dead_c);
-			sem_unlink("/check_dead");
-			data->check_dead_c = sem_open("/check_dead", O_CREAT | O_EXCL, 0644, 1);
-		}
-		else
-			error(ERROR_4, data);
-	}
-	data->now_times_eat_c = sem_open("/now_times", O_CREAT | O_EXCL, 0644, 1);
-	if (data->now_times_eat_c == SEM_FAILED)
-	{
-		if (errno == EEXIST)
-		{
-			sem_close(data->now_times_eat_c);
-			sem_unlink("/now_times");
-			data->now_times_eat_c = sem_open("/now_times", O_CREAT | O_EXCL, 0644, 1);
-		}
-		else
-			error(ERROR_4, data);
-	}
-	return (0);
+	data->forks = create_sem(data->forks, "/fork", data->nbr_of_philos, data);
+	data->write = create_sem(data->write, "/write", 1, data);
+	data->death = create_sem(data->death, "/death", 1, data);
+	data->check_dead_c = create_sem(data->check_dead_c, "/check_death", 1, data);
+	data->now_times_eat_c = create_sem(data->now_times_eat_c, "/now_times", 1, data);
 }
 
-int	check_input_b(int argc, char **argv)
+sem_t	*create_sem(sem_t *sem, char *name, int size, t_data *data)
+{
+	sem = sem_open(name, O_CREAT | O_EXCL, 0644, size);
+	if (sem == SEM_FAILED)
+	{
+		if (errno == EEXIST)
+		{
+			sem_close(sem);
+			sem_unlink(name);
+			sem = sem_open(name, O_CREAT | O_EXCL, 0644, size);
+		}
+		else
+			error(ERROR_4, data);
+	}
+	return (sem);
+}
+
+void	check_input_b(int argc, char **argv)
 {
 	int	i;
 	int	j;
@@ -105,40 +66,30 @@ int	check_input_b(int argc, char **argv)
 			while (argv[i][j])
 			{
 				if ((int)argv[i][j] < '0' || (int)argv[i][j] > '9')
-					return (error(ERROR_3, NULL), 1);
+					error(ERROR_3, NULL);
 				else if ((int)argv[i][0] == '0')
-					return (error(ERROR_3, NULL), 1);
+					error(ERROR_3, NULL);
 				j++;
 			}
 			i++;
 		}
 	}
 	else
-		return (error(ERROR_0, NULL), 1);
-	return (0);
+		error(ERROR_0, NULL);
 }
 
-void	create_philo_b(t_philos *p, t_data *data, int i)
+t_philos	create_philo_b(t_data *data)
 {
-	p->nbr_philo = i;
-	p->now_eat.tv_sec = 0;
-	p->now_eat.tv_usec = 0;
-	p->now_death.tv_sec = 0;
-	p->now_death.tv_usec = 0;
-	p->now_times_eat = 0;
-	p->data = data;
-	p->now_eat_lock = sem_open("/now_eat", O_CREAT | O_EXCL, 0644, 0);
-	if (p->now_eat_lock == SEM_FAILED)
-	{
-		if (errno == EEXIST)
-		{
-			sem_close(p->now_eat_lock);
-			sem_unlink("/now_eat");
-			p->now_eat_lock = sem_open("/now_eat", O_CREAT | O_EXCL, 0644, data->nbr_of_philos);
-		}
-		else
-			error(ERROR_4, data);
-	}
+	t_philos	philo;
+
+	philo.nbr_philo = 0;
+	philo.now_eat.tv_sec = 0;
+	philo.now_eat.tv_usec = 0;
+	philo.now_death.tv_sec = 0;
+	philo.now_death.tv_usec = 0;
+	philo.now_times_eat = 0;
+	philo.now_eat_lock = create_sem(philo.now_eat_lock, "/now_eat", 1, data);
+	return (philo);
 }
 
 void	error(char *msg, t_data *data)

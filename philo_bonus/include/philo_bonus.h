@@ -6,7 +6,7 @@
 /*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 11:29:09 by lbohm             #+#    #+#             */
-/*   Updated: 2024/06/06 15:06:49 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/06/07 11:12:26 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,17 @@
 
 // struct
 
+typedef struct s_philos
+{
+	pthread_t			check;
+	struct timeval		now_death;
+	struct timeval		now_eat;
+	int					now_times_eat;
+	int					nbr_philo;
+	int					pid;
+	sem_t				*now_eat_lock;
+}				t_philos;
+
 typedef struct s_data
 {
 	int				nbr_of_philos;
@@ -43,57 +54,47 @@ typedef struct s_data
 	sem_t			*death;
 	sem_t			*check_dead_c;
 	sem_t			*now_times_eat_c;
+	struct s_philos	p;
 }				t_data;
-
-typedef struct s_philos
-{
-	pthread_t			check;
-	struct timeval		now_death;
-	struct timeval		now_eat;
-	int					now_times_eat;
-	int					nbr_philo;
-	int					pid;
-	t_data				*data;
-	sem_t				*now_eat_lock;
-}				t_philos;
 
 // monitoring_bonus
 
-void	*check_for_death_b(void *philo);
-void	waiting_room_b(int time_to_wait, t_philos *p);
-int		check_with_mutex_b(t_philos *p, int check);
-long	check_with_mutex_2_b(t_philos *p);
+void		*check_for_death_b(void *philo);
+void		waiting_room_b(int time_to_wait, t_data *data);
+int			check_with_mutex_b(t_data *data, int check);
+long		check_with_mutex_2_b(t_philos *p);
 
 // parsing_bonus
 
-int		check_input_b(int argc, char **argv);
-int		parsing_b(int argc, char **argv, t_data *data);
-void	create_philo_b(t_philos *p, t_data *data, int i);
-void	error(char *msg, t_data *data);
+void		check_input_b(int argc, char **argv);
+void		parsing_b(int argc, char **argv, t_data *data);
+sem_t		*create_sem(sem_t *sem, char *name, int size, t_data *data);
+t_philos	create_philo_b(t_data *data);
+void		error(char *msg, t_data *data);
 
 // philo_bonus
 
-int		main(int argc, char **argv);
-void	start_processes(t_data *data);
-void	dining_room_b(t_data *data, int i);
-void	take_forks_and_eat_b(t_data *data, t_philos *p);
-void	wait_for_processes(t_data *data, int nbr_of_philos);
+int			main(int argc, char **argv);
+void		start_processes(t_data *data);
+void		dining_room_b(t_data *data, int i);
+void		take_forks_and_eat_b(t_data *data);
+void		wait_for_processes(t_data *data, int nbr_of_philos);
 
 // utils_bonus
 
-void	ft_putstr_fd(char *s, int fd);
-int		ft_atoi(const char *ascii);
-long	get_time_b(void);
-void	clean_up_b(t_data *data);
-void	kill_processes(t_data *data);
+void		ft_putstr_fd(char *s, int fd);
+int			ft_atoi(const char *ascii);
+long		get_time_b(void);
+void		clean_up_b(t_data *data);
+void		kill_processes(t_data *data);
 
 // msgs_bonus
 
-void	msg_thinking_b(t_philos *p);
-void	msg_eating_b(t_philos *p);
-void	msg_sleeping_b(t_philos *p);
-void	msg_dead_b(t_philos *p);
-void	msg_fork_b(t_philos *p);
+void		msg_thinking_b(t_data *data);
+void		msg_eating_b(t_data *data);
+void		msg_sleeping_b(t_data *data);
+void		msg_dead_b(t_data *data);
+void		msg_fork_b(t_data *data);
 
 // error msg
 
