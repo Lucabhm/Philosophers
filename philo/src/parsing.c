@@ -6,7 +6,7 @@
 /*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 09:22:17 by lbohm             #+#    #+#             */
-/*   Updated: 2024/06/07 12:36:56 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/06/10 11:30:47 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,7 @@ int	create_philos(t_data *data)
 		pthread_mutex_init(&philo->now_eat_lock, NULL);
 		pthread_mutex_init(&philo->now_times_eat_c, NULL);
 		philo->nbr_philo = i + 1;
-		philo->now_eat.tv_sec = 0;
-		philo->now_eat.tv_usec = 0;
+		philo->now_eat = 0;
 		philo->now_times_eat = 0;
 		philo->data = data;
 		philo->next = NULL;

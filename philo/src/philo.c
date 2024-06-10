@@ -6,7 +6,7 @@
 /*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 12:06:23 by lbohm             #+#    #+#             */
-/*   Updated: 2024/06/07 16:09:07 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/06/10 12:30:35 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ int	start_threads(t_data *data)
 
 	i = 0;
 	first = data->philos;
-	gettimeofday(&data->start, NULL);
+	data->start = get_time();
 	while (data->nbr_of_philos > i)
 	{
 		first->now_eat = data->start;
@@ -59,7 +59,6 @@ void	*dining_room(void *philo)
 	t_philos	*p;
 
 	p = philo;
-	msg_thinking(p);
 	if (p->nbr_philo % 2 != 0)
 		waiting_room(p->data->time_to_eat / 2, p);
 	while ((p->data->max_eat == 0 && p->data->nbr_of_philos != 1)
@@ -87,8 +86,9 @@ void	take_forks_and_eat(t_philos *p,
 	msg_fork(p);
 	msg_eating(p);
 	waiting_room(p->data->time_to_eat, p);
+	usleep(100);
 	pthread_mutex_lock(&p->now_eat_lock);
-	gettimeofday(&(p)->now_eat, NULL);
+	p->now_eat = get_time();
 	pthread_mutex_unlock(&p->now_eat_lock);
 	pthread_mutex_unlock(fork2);
 	pthread_mutex_unlock(fork1);

@@ -6,7 +6,7 @@
 /*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 12:06:31 by lbohm             #+#    #+#             */
-/*   Updated: 2024/06/07 15:08:41 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/06/10 11:33:29 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ typedef struct s_data
 	int				time_to_eat;
 	int				time_to_sleep;
 	int				max_eat;
-	struct timeval	start;
+	long			start;
 	pthread_mutex_t	dead;
 	pthread_mutex_t	write;
 	pthread_mutex_t	check_dead_c;
@@ -44,7 +44,7 @@ typedef struct s_philos
 	pthread_mutex_t		fork;
 	pthread_mutex_t		now_eat_lock;
 	pthread_mutex_t		now_times_eat_c;
-	struct timeval		now_eat;
+	long				now_eat;
 	int					now_times_eat;
 	int					nbr_philo;
 	struct s_data		*data;
@@ -80,8 +80,8 @@ void			take_forks_and_eat(t_philos *p,
 void			ft_putstr_fd(char *s, int fd);
 int				ft_atoi(const char *ascii);
 void			ft_lstadd_back(t_philos **lst, t_philos *new);
-long			calc_time(struct timeval start, t_philos *p);
 long			get_time(void);
+long			calc_time(t_philos *p);
 
 // msgs
 

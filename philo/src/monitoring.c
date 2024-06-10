@@ -6,7 +6,7 @@
 /*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 13:41:27 by lbohm             #+#    #+#             */
-/*   Updated: 2024/06/07 16:10:55 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/06/10 12:47:12 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,19 +44,6 @@ void	waiting_room(int time_to_wait, t_philos *p)
 	}
 }
 
-void	waiting_room_m(int time_to_wait, t_philos *p)
-{
-	struct timeval	now_time;
-
-	if (!check_with_mutex(p, 1))
-	{
-		gettimeofday(&now_time, NULL);
-		while (((get_time() - ((now_time.tv_sec * 1000)
-					+ (now_time.tv_usec / 1000))) * 1000) < time_to_wait)
-			usleep(50);
-	}
-}
-
 int	check_with_mutex(t_philos *p, int check)
 {
 	int	ret;
@@ -83,9 +70,9 @@ long	check_with_mutex_2(t_philos *p)
 
 	ret = 0;
 	pthread_mutex_lock(&p->now_eat_lock);
-	if (p->now_eat.tv_sec == 0)
-		gettimeofday(&p->now_eat, NULL);
-	ret = (p->now_eat.tv_sec * 1000 + p->now_eat.tv_usec / 1000);
+	if (p->now_eat == 0)
+		p->now_eat = get_time();
+	ret = p->now_eat;
 	pthread_mutex_unlock(&p->now_eat_lock);
 	return (ret);
 }
