@@ -28,8 +28,8 @@ $(OBJDIR)%.o: %.c
 			@if [ $(COUNT) -eq $(FILES) ]; then echo ""; fi
 			$(eval COUNT := $(shell echo $$(($(COUNT) + 1))))
 
-$(NAME):	msg_mand $(OBJS_PATH)
-			@cc $(OBJS_PATH) -o $(NAME) -fsanitize=address
+$(NAME):	msg_bonus $(OBJS_PATH)
+			@cc $(OBJS_PATH) -o $(NAME)
 
 all:		$(NAME)
 
@@ -43,7 +43,7 @@ fclean:		clean
 
 re:			fclean all
 
-msg_mand:
+msg_bonus:
 			@echo "$(YELLOW)Compiling Philosopher Bonus$(DEF_COLOR)"
 
 .PHONY: all clean fclean re

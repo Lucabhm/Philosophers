@@ -6,7 +6,7 @@
 /*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 11:29:09 by lbohm             #+#    #+#             */
-/*   Updated: 2024/06/07 11:12:26 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/06/10 16:08:24 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ typedef struct s_philos
 {
 	pthread_t			check;
 	struct timeval		now_death;
-	struct timeval		now_eat;
+	long				now_eat;
 	int					now_times_eat;
 	int					nbr_philo;
 	int					pid;
@@ -46,14 +46,14 @@ typedef struct s_data
 	int				time_to_eat;
 	int				time_to_sleep;
 	int				max_eat;
-	int				*ids;
 	int				check_dead;
-	struct timeval	start;
+	int				*ids;
+	long			start;
 	sem_t			*forks;
 	sem_t			*write;
-	sem_t			*death;
 	sem_t			*check_dead_c;
 	sem_t			*now_times_eat_c;
+	sem_t			*test;
 	struct s_philos	p;
 }				t_data;
 
@@ -61,8 +61,8 @@ typedef struct s_data
 
 void		*check_for_death_b(void *philo);
 void		waiting_room_b(int time_to_wait, t_data *data);
-int			check_with_mutex_b(t_data *data, int check);
-long		check_with_mutex_2_b(t_philos *p);
+int			check_with_sem(t_data *data, int check);
+long		check_with_sem_2(t_philos *p);
 
 // parsing_bonus
 
@@ -70,7 +70,8 @@ void		check_input_b(int argc, char **argv);
 void		parsing_b(int argc, char **argv, t_data *data);
 sem_t		*create_sem(sem_t *sem, char *name, int size, t_data *data);
 t_philos	create_philo_b(t_data *data);
-void		error(char *msg, t_data *data);
+void		error_b(char *msg, t_data *data);
+void		*child(void *data);
 
 // philo_bonus
 
@@ -85,6 +86,7 @@ void		wait_for_processes(t_data *data, int nbr_of_philos);
 void		ft_putstr_fd(char *s, int fd);
 int			ft_atoi(const char *ascii);
 long		get_time_b(void);
+long		calc_time_b(t_data *data);
 void		clean_up_b(t_data *data);
 void		kill_processes(t_data *data);
 

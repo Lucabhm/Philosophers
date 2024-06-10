@@ -6,7 +6,7 @@
 /*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 11:18:41 by lbohm             #+#    #+#             */
-/*   Updated: 2024/06/06 15:07:38 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/06/10 15:54:18 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,11 +57,20 @@ long	get_time_b(void)
 	return (((now_time.tv_sec * 1000) + (now_time.tv_usec / 1000)));
 }
 
+long	calc_time_b(t_data *data)
+{
+	struct timeval	now_time;
+	long			now;
+
+	gettimeofday(&now_time, NULL);
+	now = now_time.tv_sec * 1000 + now_time.tv_usec / 1000;
+	return (now - data->start);
+}
+
 void	clean_up_b(t_data *data)
 {
 	sem_close(data->forks);
 	sem_close(data->write);
-	sem_close(data->death);
 	sem_unlink("/forks");
 	sem_unlink("/write");
 	sem_unlink("/death");

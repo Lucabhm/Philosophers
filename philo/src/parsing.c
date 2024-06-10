@@ -6,7 +6,7 @@
 /*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 09:22:17 by lbohm             #+#    #+#             */
-/*   Updated: 2024/06/10 11:30:47 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/06/10 13:31:39 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,11 +22,10 @@ int	parsing(int argc, char **argv, t_data *data)
 		data->max_eat = ft_atoi(argv[5]);
 	else
 		data->max_eat = 0;
-	pthread_mutex_init(&data->dead, NULL);
 	pthread_mutex_init(&data->write, NULL);
 	pthread_mutex_init(&data->check_dead_c, NULL);
-	pthread_mutex_init(&data->take, NULL);
 	data->check_dead = 0;
+	data->start = 0;
 	return (0);
 }
 
@@ -99,7 +98,6 @@ void	clean_up(t_philos **philos)
 	i = 0;
 	philo = *philos;
 	nbr_philos = philo->data->nbr_of_philos;
-	pthread_mutex_destroy(&philo->data->dead);
 	pthread_mutex_destroy(&philo->data->write);
 	pthread_mutex_destroy(&philo->data->check_dead_c);
 	while (nbr_philos > i)

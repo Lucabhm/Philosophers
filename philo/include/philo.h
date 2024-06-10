@@ -6,7 +6,7 @@
 /*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 12:06:31 by lbohm             #+#    #+#             */
-/*   Updated: 2024/06/10 11:33:29 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/06/10 13:31:44 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,10 +31,8 @@ typedef struct s_data
 	int				time_to_sleep;
 	int				max_eat;
 	long			start;
-	pthread_mutex_t	dead;
 	pthread_mutex_t	write;
 	pthread_mutex_t	check_dead_c;
-	pthread_mutex_t	take;
 	int				check_dead;
 }				t_data;
 

@@ -6,7 +6,7 @@
 /*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 09:22:17 by lbohm             #+#    #+#             */
-/*   Updated: 2024/06/07 11:09:46 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/06/10 15:47:03 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,17 +22,16 @@ void	parsing_b(int argc, char **argv, t_data *data)
 		data->max_eat = ft_atoi(argv[5]);
 	else
 		data->max_eat = 0;
-	data->start.tv_sec = 0;
-	data->start.tv_usec = 0;
+	data->start = 0;
 	data->check_dead = 0;
-	data->ids = (int *)malloc (data->nbr_of_philos * (sizeof(int)));
+	data->ids = (int *)malloc (sizeof(int) * data->nbr_of_philos);
 	if (!data->ids)
-		error(ERROR_2, data);
+		error_b(ERROR_2, data);
 	data->forks = create_sem(data->forks, "/fork", data->nbr_of_philos, data);
 	data->write = create_sem(data->write, "/write", 1, data);
-	data->death = create_sem(data->death, "/death", 1, data);
 	data->check_dead_c = create_sem(data->check_dead_c, "/check_death", 1, data);
 	data->now_times_eat_c = create_sem(data->now_times_eat_c, "/now_times", 1, data);
+	data->test = create_sem(data->test, "/test", 1, data);
 }
 
 sem_t	*create_sem(sem_t *sem, char *name, int size, t_data *data)
@@ -47,7 +46,7 @@ sem_t	*create_sem(sem_t *sem, char *name, int size, t_data *data)
 			sem = sem_open(name, O_CREAT | O_EXCL, 0644, size);
 		}
 		else
-			error(ERROR_4, data);
+			error_b(ERROR_4, data);
 	}
 	return (sem);
 }
@@ -66,16 +65,16 @@ void	check_input_b(int argc, char **argv)
 			while (argv[i][j])
 			{
 				if ((int)argv[i][j] < '0' || (int)argv[i][j] > '9')
-					error(ERROR_3, NULL);
+					error_b(ERROR_3, NULL);
 				else if ((int)argv[i][0] == '0')
-					error(ERROR_3, NULL);
+					error_b(ERROR_3, NULL);
 				j++;
 			}
 			i++;
 		}
 	}
 	else
-		error(ERROR_0, NULL);
+		error_b(ERROR_0, NULL);
 }
 
 t_philos	create_philo_b(t_data *data)
@@ -83,8 +82,7 @@ t_philos	create_philo_b(t_data *data)
 	t_philos	philo;
 
 	philo.nbr_philo = 0;
-	philo.now_eat.tv_sec = 0;
-	philo.now_eat.tv_usec = 0;
+	philo.now_eat = 0;
 	philo.now_death.tv_sec = 0;
 	philo.now_death.tv_usec = 0;
 	philo.now_times_eat = 0;
@@ -92,13 +90,12 @@ t_philos	create_philo_b(t_data *data)
 	return (philo);
 }
 
-void	error(char *msg, t_data *data)
+void	error_b(char *msg, t_data *data)
 {
 	if (data)
 	{
 		sem_close(data->forks);
 		sem_close(data->write);
-		sem_close(data->death);
 		sem_unlink("/forks");
 		sem_unlink("/write");
 		sem_unlink("/death");

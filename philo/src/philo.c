@@ -6,7 +6,7 @@
 /*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 12:06:23 by lbohm             #+#    #+#             */
-/*   Updated: 2024/06/10 12:30:35 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/06/10 16:51:41 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,10 +59,12 @@ void	*dining_room(void *philo)
 	t_philos	*p;
 
 	p = philo;
+	msg_thinking(p);
+	if (p->data->nbr_of_philos == 1)
+		return (NULL);
 	if (p->nbr_philo % 2 != 0)
 		waiting_room(p->data->time_to_eat / 2, p);
-	while ((p->data->max_eat == 0 && p->data->nbr_of_philos != 1)
-		|| p->data->max_eat > check_with_mutex(p, 2))
+	while (p->data->max_eat == 0 || p->data->max_eat > check_with_mutex(p, 2))
 	{
 		if (check_with_mutex(p, 1))
 			break ;
@@ -86,12 +88,12 @@ void	take_forks_and_eat(t_philos *p,
 	msg_fork(p);
 	msg_eating(p);
 	waiting_room(p->data->time_to_eat, p);
-	usleep(100);
+	pthread_mutex_unlock(fork2);
+	pthread_mutex_unlock(fork1);
+	usleep(500);
 	pthread_mutex_lock(&p->now_eat_lock);
 	p->now_eat = get_time();
 	pthread_mutex_unlock(&p->now_eat_lock);
-	pthread_mutex_unlock(fork2);
-	pthread_mutex_unlock(fork1);
 	msg_sleeping(p);
 	waiting_room(p->data->time_to_sleep, p);
 	pthread_mutex_lock(&p->now_times_eat_c);
