@@ -6,7 +6,7 @@
 /*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 09:22:17 by lbohm             #+#    #+#             */
-/*   Updated: 2024/06/11 12:32:39 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/06/12 14:50:04 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ int	create_philos(t_data *data)
 	i = 0;
 	while (data->nbr_of_philos > i)
 	{
-		philo = (t_philos *)malloc (sizeof(*philo));
+		philo = (t_philos *)malloc (sizeof(t_philos));
 		if (!philo)
 			return (error(ERROR_2, &philo), 1);
 		pthread_mutex_init(&philo->fork, NULL);

@@ -6,7 +6,7 @@
 /*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 12:06:23 by lbohm             #+#    #+#             */
-/*   Updated: 2024/06/11 13:50:29 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/06/12 15:40:43 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,41 +14,42 @@
 
 int	main(int argc, char **argv)
 {
-	t_data		data;
+	t_data	*data;
 
-	data.philos = NULL;
-	if (check_input(argc, argv) || parsing(argc, argv, &data)
-		|| create_philos(&data))
+	data = (t_data *)malloc (sizeof(t_data));
+	if (!data)
+		return (error(ERROR_2, NULL), 1);
+	data->philos = NULL;
+	if (check_input(argc, argv) || parsing(argc, argv, data)
+		|| create_philos(data))
 		return (1);
-	start_threads(&data);
-	clean_up(&data.philos);
+	start_threads(data);
+	clean_up(&data->philos);
 	return (0);
 }
 
 int	start_threads(t_data *data)
 {
-	int				i;
 	t_philos		*first;
 	pthread_t		check;
 
-	i = 0;
 	first = data->philos;
 	data->start = get_time();
-	while (data->nbr_of_philos > i)
+	pthread_create(&check, NULL, check_for_death, first);
+	while (first)
 	{
-		first->now_eat = data->start;
 		pthread_create(&first->philo, NULL, dining_room, first);
 		first = first->next;
-		i++;
+		if (first == data->philos)
+			break ;
 	}
-	pthread_create(&check, NULL, check_for_death, first);
 	first = data->philos;
-	i = 0;
-	while (data->nbr_of_philos > i)
+	while (first)
 	{
 		pthread_join(first->philo, NULL);
 		first = first->next;
-		i++;
+		if (first == data->philos)
+			break ;
 	}
 	pthread_join(check, NULL);
 	return (0);
@@ -59,7 +60,6 @@ void	*dining_room(void *philo)
 	t_philos	*p;
 
 	p = philo;
-	msg_thinking(p);
 	if (p->data->nbr_of_philos == 1)
 		return (NULL);
 	if (p->nbr_philo % 2 != 0)
@@ -82,6 +82,7 @@ void	*dining_room(void *philo)
 void	take_forks_and_eat(t_philos *p,
 	pthread_mutex_t *fork1, pthread_mutex_t *fork2)
 {
+	msg_thinking(p);
 	pthread_mutex_lock(fork1);
 	msg_fork(p);
 	pthread_mutex_lock(fork2);
@@ -99,5 +100,4 @@ void	take_forks_and_eat(t_philos *p,
 	pthread_mutex_lock(&p->now_times_eat_c);
 	p->now_times_eat++;
 	pthread_mutex_unlock(&p->now_times_eat_c);
-	msg_thinking(p);
 }

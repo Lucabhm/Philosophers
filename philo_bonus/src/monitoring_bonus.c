@@ -6,7 +6,7 @@
 /*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 11:43:45 by lbohm             #+#    #+#             */
-/*   Updated: 2024/06/10 16:53:57 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/06/12 18:01:29 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,19 +48,15 @@ int	check_with_sem(t_data *data, int check)
 	ret = 0;
 	if (check == 1)
 	{
-		if (!sem_wait(data->check_dead_c))
-		{
-			ret = data->check_dead;
-			sem_post(data->check_dead_c);
-		}
+		sem_wait(data->check_dead_c);
+		ret = data->check_dead;
+		sem_post(data->check_dead_c);
 	}
 	if (check == 2)
 	{
-		if (!sem_wait(data->now_times_eat_c))
-		{
-			ret = data->p.now_times_eat;
-			sem_post(data->now_times_eat_c);
-		}
+		sem_wait(data->now_times_eat_c);
+		ret = data->p.now_times_eat;
+		sem_post(data->now_times_eat_c);
 	}
 	return (ret);
 }

@@ -6,7 +6,7 @@
 /*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 11:28:36 by lbohm             #+#    #+#             */
-/*   Updated: 2024/06/10 16:55:56 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/06/12 18:01:21 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,22 +77,19 @@ void	dining_room_b(t_data *d, int i)
 	d->p.nbr_philo = i;
 	d->p.now_eat = d->start;
 	pthread_create(&d->p.check, NULL, check_for_death_b, d);
-	msg_thinking_b(d);
-	if (d->nbr_of_philos != 1)
+	if (d->p.nbr_philo % 2 != 0)
+		waiting_room_b(d->time_to_eat / 2, d);
+	while (d->max_eat == 0 || d->max_eat > check_with_sem(d, 2))
 	{
-		if (d->p.nbr_philo % 2 != 0)
-			waiting_room_b(d->time_to_eat / 2, d);
-		while (d->max_eat == 0 || d->max_eat > check_with_sem(d, 2))
-		{
-			if (check_with_sem(d, 1))
-				break ;
-			take_forks_and_eat_b(d);
-			msg_sleeping_b(d);
-			waiting_room_b(d->time_to_sleep, d);
-			msg_thinking_b(d);
-			usleep(500);
-			d->p.now_times_eat++;
-		}
+		if (check_with_sem(d, 1))
+			break ;
+		msg_thinking_b(d);
+		take_forks_and_eat_b(d);
+		msg_sleeping_b(d);
+		waiting_room_b(d->time_to_sleep, d);
+		sem_wait(d->now_times_eat_c);
+		d->p.now_times_eat++;
+		sem_post(d->now_times_eat_c);
 	}
 	pthread_join(d->p.check, NULL);
 	exit(d->check_dead);
@@ -100,30 +97,17 @@ void	dining_room_b(t_data *d, int i)
 
 void	take_forks_and_eat_b(t_data *data)
 {
-	if (sem_wait(data->forks) == -1)
-		error_b(ERROR_6, data);
-	else
-	{
-		msg_fork_b(data);
-		if (sem_wait(data->forks) == -1)
-		{
-			sem_post(data->forks);
-			error_b(ERROR_6, data);
-		}
-		else
-		{
-			msg_fork_b(data);
-			msg_eating_b(data);
-			waiting_room_b(data->time_to_eat, data);
-			if (!sem_wait(data->p.now_eat_lock))
-			{
-				data->p.now_eat = get_time_b();
-				sem_post(data->p.now_eat_lock);
-			}
-			sem_post(data->forks);
-			sem_post(data->forks);
-		}
-	}
+	sem_wait(data->forks);
+	msg_fork_b(data);
+	sem_wait(data->forks);
+	msg_fork_b(data);
+	msg_eating_b(data);
+	waiting_room_b(data->time_to_eat, data);
+	sem_post(data->forks);
+	sem_post(data->forks);
+	sem_wait(data->p.now_eat_lock);
+	data->p.now_eat = get_time_b();
+	sem_post(data->p.now_eat_lock);
 }
 
 void	wait_for_processes(t_data *data, int nbr_of_philos)
@@ -134,13 +118,9 @@ void	wait_for_processes(t_data *data, int nbr_of_philos)
 	i = 0;
 	while (nbr_of_philos > i)
 	{
-		waitpid(data->ids[i], &status, 0);
-		if (WIFEXITED(status))
-		{
+		waitpid(-1, &status, 0);
+		if (WEXITSTATUS(status))
 			kill_processes(data);
-			exit(WIFEXITED(status));
-		}
 		i++;
 	}
-	free(data->ids);
 }
