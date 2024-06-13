@@ -6,7 +6,7 @@
 /*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 12:06:23 by lbohm             #+#    #+#             */
-/*   Updated: 2024/06/13 12:10:34 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/06/13 15:57:14 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,12 +35,10 @@ int	start_threads(t_data *data)
 
 	first = data->philos;
 	data->start = get_time();
-	if (pthread_create(&check, NULL, check_for_death, first))
-		return (error(ERROR_4, &data->philos), 1);
+	pthread_create(&check, NULL, check_for_death, first);
 	while (first)
 	{
-		if (pthread_create(&first->philo, NULL, dining_room, first))
-			return (error(ERROR_4, &data->philos), 1);
+		pthread_create(&first->philo, NULL, dining_room, first);
 		first = first->next;
 		if (first == data->philos)
 			break ;
@@ -48,14 +46,12 @@ int	start_threads(t_data *data)
 	first = data->philos;
 	while (first)
 	{
-		if (pthread_join(first->philo, NULL))
-			return (error(ERROR_4, &data->philos), 1);
+		pthread_join(first->philo, NULL);
 		first = first->next;
 		if (first == data->philos)
 			break ;
 	}
-	if (pthread_join(check, NULL))
-		return (error(ERROR_4, &data->philos), 1);
+	pthread_join(check, NULL);
 	return (0);
 }
 
@@ -73,9 +69,9 @@ void	*dining_room(void *philo)
 		if (check_with_mutex(p, 1))
 			break ;
 		if (p->nbr_philo % 2 == 0)
-			take_forks_and_eat(p, &p->fork, &p->next->fork);
-		else
 			take_forks_and_eat(p, &p->next->fork, &p->fork);
+		else
+			take_forks_and_eat(p, &p->fork, &p->next->fork);
 	}
 	return (NULL);
 }
@@ -95,8 +91,10 @@ void	take_forks_and_eat(t_philos *p,
 	usleep(500);
 	pthread_mutex_lock(&p->now_eat_lock);
 	p->now_eat = get_time();
-	p->now_times_eat++;
 	pthread_mutex_unlock(&p->now_eat_lock);
 	msg_sleeping(p);
 	waiting_room(p->data->time_to_sleep, p);
+	pthread_mutex_lock(&p->now_times_eat_c);
+	p->now_times_eat++;
+	pthread_mutex_unlock(&p->now_times_eat_c);
 }

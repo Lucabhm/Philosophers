@@ -6,7 +6,7 @@
 /*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 12:06:31 by lbohm             #+#    #+#             */
-/*   Updated: 2024/06/13 11:53:50 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/06/13 14:11:01 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ typedef struct s_philos
 	pthread_t			philo;
 	pthread_mutex_t		fork;
 	pthread_mutex_t		now_eat_lock;
+	pthread_mutex_t		now_times_eat_c;
 	long				now_eat;
 	int					now_times_eat;
 	int					nbr_philo;

@@ -6,7 +6,7 @@
 /*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 16:46:15 by lbohm             #+#    #+#             */
-/*   Updated: 2024/06/13 12:32:45 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/06/13 14:47:50 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	msg_thinking(t_philos *p)
 		printf(format, calc_time(p), p->nbr_philo);
 	pthread_mutex_unlock(&p->data->write);
 	if (p->nbr_philo % 2 != 0)
-		usleep(250);
+		usleep(500);
 }
 
 void	msg_eating(t_philos *p)

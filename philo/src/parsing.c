@@ -6,7 +6,7 @@
 /*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 09:22:17 by lbohm             #+#    #+#             */
-/*   Updated: 2024/06/13 10:51:57 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/06/13 14:11:34 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ int	create_philos(t_data *data)
 	{
 		pthread_mutex_init(&philo[i].fork, NULL);
 		pthread_mutex_init(&philo[i].now_eat_lock, NULL);
+		pthread_mutex_init(&philo[i].now_times_eat_c, NULL);
 		philo[i].nbr_philo = i + 1;
 		philo[i].now_eat = 0;
 		philo[i].now_times_eat = 0;
@@ -116,8 +117,10 @@ void	clean_up(t_philos **philos)
 		next = philo->next;
 		pthread_mutex_destroy(&philo->fork);
 		pthread_mutex_destroy(&philo->now_eat_lock);
+		pthread_mutex_destroy(&philo->now_times_eat_c);
 		philo = next;
 		i++;
 	}
+	free(philo->data);
 	free(*philos);
 }

@@ -6,7 +6,7 @@
 /*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 11:28:36 by lbohm             #+#    #+#             */
-/*   Updated: 2024/06/13 09:05:35 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/06/13 16:38:14 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,12 +77,13 @@ void	dining_room_b(t_data *d, int i)
 	d->p.nbr_philo = i;
 	d->p.now_eat = d->start;
 	pthread_create(&d->p.check, NULL, check_for_death_b, d);
+	if (d->nbr_of_philos == 1)
+		waiting_room_b(d->time_to_die + 1, d);
 	if (d->p.nbr_philo % 2 != 0)
 		waiting_room_b(d->time_to_eat / 2, d);
-	while (d->max_eat == 0 || d->max_eat > check_with_sem(d, 2))
+	while ((d->max_eat == 0 || d->max_eat > check_with_sem(d, 2))
+		&& !check_with_sem(d, 1))
 	{
-		if (check_with_sem(d, 1))
-			break ;
 		msg_thinking_b(d);
 		take_forks_and_eat_b(d);
 		msg_sleeping_b(d);
