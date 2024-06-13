@@ -6,7 +6,7 @@
 /*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 09:22:17 by lbohm             #+#    #+#             */
-/*   Updated: 2024/06/12 14:50:04 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/06/13 10:51:57 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,25 @@
 
 int	parsing(int argc, char **argv, t_data *data)
 {
-	data->nbr_of_philos = ft_atoi(argv[1]);
-	data->time_to_die = ft_atoi(argv[2]);
-	data->time_to_eat = ft_atoi(argv[3]);
-	data->time_to_sleep = ft_atoi(argv[4]);
+	int	tmp_nbr_of_philos;
+	int	tmp_time_to_die;
+	int	tmp_time_to_eat;
+	int	tmp_time_to_sleep;
+	int	tmp_max_eat;
+
+	tmp_nbr_of_philos = ft_atoi(argv[1]);
+	tmp_time_to_die = ft_atoi(argv[2]);
+	tmp_time_to_eat = ft_atoi(argv[3]);
+	tmp_time_to_sleep = ft_atoi(argv[4]);
 	if (argc == 6)
-		data->max_eat = ft_atoi(argv[5]);
+		tmp_max_eat = ft_atoi(argv[5]);
 	else
-		data->max_eat = 0;
+		tmp_max_eat = 0;
+	data->nbr_of_philos = tmp_nbr_of_philos;
+	data->time_to_die = tmp_time_to_die;
+	data->time_to_eat = tmp_time_to_eat;
+	data->time_to_sleep = tmp_time_to_sleep;
+	data->max_eat = tmp_max_eat;
 	pthread_mutex_init(&data->write, NULL);
 	pthread_mutex_init(&data->check_dead_c, NULL);
 	data->check_dead = 0;
@@ -35,23 +46,23 @@ int	create_philos(t_data *data)
 	t_philos		*philo;
 
 	i = 0;
+	philo = (t_philos *)malloc (sizeof(t_philos) * data->nbr_of_philos);
+	if (!philo)
+		return (error(ERROR_2, NULL), 1);
 	while (data->nbr_of_philos > i)
 	{
-		philo = (t_philos *)malloc (sizeof(t_philos));
-		if (!philo)
-			return (error(ERROR_2, &philo), 1);
-		pthread_mutex_init(&philo->fork, NULL);
-		pthread_mutex_init(&philo->now_eat_lock, NULL);
-		pthread_mutex_init(&philo->now_times_eat_c, NULL);
-		philo->nbr_philo = i + 1;
-		philo->now_eat = 0;
-		philo->now_times_eat = 0;
-		philo->data = data;
-		philo->next = NULL;
-		ft_lstadd_back(&data->philos, philo);
+		pthread_mutex_init(&philo[i].fork, NULL);
+		pthread_mutex_init(&philo[i].now_eat_lock, NULL);
+		philo[i].nbr_philo = i + 1;
+		philo[i].now_eat = 0;
+		philo[i].now_times_eat = 0;
+		philo[i].data = data;
+		philo[i].next = NULL;
+		ft_lstadd_back(&data->philos, &philo[i]);
 		i++;
 	}
-	return (philo->next = data->philos, 0);
+	i--;
+	return (philo[i].next = data->philos, 0);
 }
 
 int	check_input(int argc, char **argv)
@@ -105,9 +116,8 @@ void	clean_up(t_philos **philos)
 		next = philo->next;
 		pthread_mutex_destroy(&philo->fork);
 		pthread_mutex_destroy(&philo->now_eat_lock);
-		pthread_mutex_destroy(&philo->now_times_eat_c);
-		free(philo);
 		philo = next;
 		i++;
 	}
+	free(*philos);
 }

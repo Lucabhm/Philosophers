@@ -6,7 +6,7 @@
 /*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 13:41:27 by lbohm             #+#    #+#             */
-/*   Updated: 2024/06/12 15:30:19 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/06/13 13:01:22 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ void	*check_for_death(void *philo)
 			return (NULL);
 		}
 		p = p->next;
+		usleep(500);
 	}
 	return (NULL);
 }
@@ -57,9 +58,9 @@ int	check_with_mutex(t_philos *p, int check)
 	}
 	if (check == 2)
 	{
-		pthread_mutex_lock(&p->now_times_eat_c);
+		pthread_mutex_lock(&p->now_eat_lock);
 		ret = p->now_times_eat;
-		pthread_mutex_unlock(&p->now_times_eat_c);
+		pthread_mutex_unlock(&p->now_eat_lock);
 	}
 	return (ret);
 }

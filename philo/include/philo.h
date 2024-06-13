@@ -6,7 +6,7 @@
 /*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 12:06:31 by lbohm             #+#    #+#             */
-/*   Updated: 2024/06/12 15:40:20 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/06/13 11:53:50 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,28 +25,27 @@
 typedef struct s_data
 {
 	struct s_philos	*philos;
+	pthread_mutex_t	write;
+	pthread_mutex_t	check_dead_c;
+	long			start;
 	int				nbr_of_philos;
 	int				time_to_die;
 	int				time_to_eat;
 	int				time_to_sleep;
 	int				max_eat;
-	long			start;
-	pthread_mutex_t	write;
-	pthread_mutex_t	check_dead_c;
 	int				check_dead;
 }				t_data;
 
 typedef struct s_philos
 {
+	struct s_philos		*next;
+	struct s_data		*data;
 	pthread_t			philo;
 	pthread_mutex_t		fork;
 	pthread_mutex_t		now_eat_lock;
-	pthread_mutex_t		now_times_eat_c;
 	long				now_eat;
 	int					now_times_eat;
 	int					nbr_philo;
-	struct s_data		*data;
-	struct s_philos		*next;
 }				t_philos;
 
 // monitoring
@@ -94,5 +93,6 @@ void			msg_dead(t_philos *p);
 # define ERROR_1 "Too many philos than possible\n"
 # define ERROR_2 "Allocation failed\n"
 # define ERROR_3 "Invalid argument\n"
+# define ERROR_4 "Thread creation failed\n"
 
 #endif
