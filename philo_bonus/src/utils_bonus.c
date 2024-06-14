@@ -6,7 +6,7 @@
 /*   By: lbohm <lbohm@student.42heilbronn.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 11:18:41 by lbohm             #+#    #+#             */
-/*   Updated: 2024/06/14 08:57:14 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/06/14 13:54:28 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,22 +69,26 @@ long	calc_time_b(t_data *data)
 
 void	clean_up_b(t_data *data)
 {
-	free(data->ids);
+	sem_close(data->p.now_eat_lock);
+	sem_close(data->p.now_times_eat_c);
 	sem_close(data->forks);
 	sem_close(data->write);
-	sem_unlink("/forks");
+	sem_close(data->check_dead_c);
+	sem_unlink("/now_times");
+	sem_unlink("/now_eat");
+	sem_unlink("/fork");
 	sem_unlink("/write");
-	sem_unlink("/death");
+	sem_unlink("/check_death");
 }
 
-void	kill_processes(t_data *data)
+void	kill_processes(t_data *data, int *ids)
 {
 	int	i;
 
 	i = 0;
 	while (data->nbr_of_philos > i)
 	{
-		kill(data->ids[i], SIGKILL);
+		kill(ids[i], SIGKILL);
 		i++;
 	}
 }

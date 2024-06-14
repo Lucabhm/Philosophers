@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   msgs_bonus.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
+/*   By: lbohm <lbohm@student.42heilbronn.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 16:46:15 by lbohm             #+#    #+#             */
-/*   Updated: 2024/06/14 09:35:42 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/06/14 13:48:02 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,8 +52,9 @@ void	msg_dead_b(t_data *data)
 	format = "%ld %i died\n";
 	sem_wait(data->write);
 	printf(format, calc_time_b(data), data->p.nbr_philo);
+	pthread_detach(data->p.check);
+	clean_up_b(data);
 	exit(1);
-	sem_post(data->write);
 }
 
 void	msg_fork_b(t_data *data)

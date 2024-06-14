@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo_bonus.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lbohm <lbohm@student.42heilbronn.de>       +#+  +:+       +#+        */
+/*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 11:29:09 by lbohm             #+#    #+#             */
-/*   Updated: 2024/06/14 08:49:51 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/06/14 12:09:09 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,6 @@ void		parsing_b(int argc, char **argv, t_data *data);
 sem_t		*create_sem(char *name, int size, t_data *data);
 t_philos	create_philo_b(t_data *data);
 void		error_b(char *msg, t_data *data);
-void		*child(void *data);
 
 // philo_bonus
 
@@ -79,7 +78,7 @@ int			main(int argc, char **argv);
 void		start_processes(t_data *data);
 void		dining_room_b(t_data *data, int i);
 void		take_forks_and_eat_b(t_data *data);
-void		wait_for_processes(t_data *data, int nbr_of_philos);
+void		wait_for_processes(t_data *data, int *ids);
 
 // utils_bonus
 
@@ -88,7 +87,7 @@ int			ft_atoi(const char *ascii);
 long		get_time_b(void);
 long		calc_time_b(t_data *data);
 void		clean_up_b(t_data *data);
-void		kill_processes(t_data *data);
+void		kill_processes(t_data *data, int *ids);
 
 // msgs_bonus
 
@@ -107,5 +106,6 @@ void		msg_fork_b(t_data *data);
 # define ERROR_4 "sem_open failed\n"
 # define ERROR_5 "fork failed\n"
 # define ERROR_6 "sem failed\n"
+# define ERROR_7 "Too many philos\n"
 
 #endif

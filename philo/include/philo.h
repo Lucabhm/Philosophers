@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
+/*   By: lbohm <lbohm@student.42heilbronn.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 12:06:31 by lbohm             #+#    #+#             */
-/*   Updated: 2024/06/13 14:11:01 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/06/14 11:01:17 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,11 +58,11 @@ long			check_with_mutex_2(t_philos *p);
 
 // parsing
 
-int				check_input(int argc, char **argv);
+int				check_input(int argc, char **argv, t_data *data);
 int				parsing(int argc, char **argv, t_data *data);
 int				create_philos(t_data *data);
-void			error(char *msg, t_philos **philos);
-void			clean_up(t_philos **philos);
+void			error(char *msg, t_data *data);
+void			clean_up(t_data *data);
 
 // philo
 

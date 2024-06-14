@@ -28,7 +28,7 @@ $(OBJDIR)%.o: %.c
 			$(eval COUNT := $(shell echo $$(($(COUNT) + 1))))
 
 $(NAME):	msg_mand $(OBJS_PATH)
-			@cc $(OBJS_PATH) -o $(NAME)
+			@cc $(OBJS_PATH) -o $(NAME) -g
 
 all:		$(NAME)
 

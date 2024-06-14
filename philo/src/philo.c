@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
+/*   By: lbohm <lbohm@student.42heilbronn.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 12:06:23 by lbohm             #+#    #+#             */
-/*   Updated: 2024/06/13 15:57:14 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/06/14 11:16:59 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,15 +16,16 @@ int	main(int argc, char **argv)
 {
 	t_data	*data;
 
+	data = NULL;
 	data = (t_data *)malloc (sizeof(t_data));
 	if (!data)
 		return (error(ERROR_2, NULL), 1);
 	data->philos = NULL;
-	if (check_input(argc, argv) || parsing(argc, argv, data)
+	if (check_input(argc, argv, data) || parsing(argc, argv, data)
 		|| create_philos(data))
 		return (1);
 	start_threads(data);
-	clean_up(&data->philos);
+	clean_up(data);
 	return (0);
 }
 

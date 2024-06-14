@@ -6,7 +6,7 @@
 /*   By: lbohm <lbohm@student.42heilbronn.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 09:22:17 by lbohm             #+#    #+#             */
-/*   Updated: 2024/06/14 08:49:45 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/06/14 13:54:45 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 void	parsing_b(int argc, char **argv, t_data *data)
 {
 	data->nbr_of_philos = ft_atoi(argv[1]);
+	if (data->nbr_of_philos > 200)
+		error_b(ERROR_7, data);
 	data->time_to_die = ft_atoi(argv[2]);
 	data->time_to_eat = ft_atoi(argv[3]);
 	data->time_to_sleep = ft_atoi(argv[4]);
@@ -24,13 +26,10 @@ void	parsing_b(int argc, char **argv, t_data *data)
 		data->max_eat = 0;
 	data->start = 0;
 	data->check_dead = 0;
-	data->ids = (int *)malloc (sizeof(int) * data->nbr_of_philos);
-	if (!data->ids)
-		error_b(ERROR_2, data);
+	data->ids = NULL;
 	data->forks = create_sem("/fork", data->nbr_of_philos, data);
 	data->write = create_sem("/write", 1, data);
 	data->check_dead_c = create_sem("/check_death", 1, data);
-	data->test = create_sem("/test", 1, data);
 }
 
 sem_t	*create_sem(char *name, int size, t_data *data)
@@ -42,7 +41,6 @@ sem_t	*create_sem(char *name, int size, t_data *data)
 	{
 		if (errno == EEXIST)
 		{
-			sem_close(sem);
 			sem_unlink(name);
 			sem = sem_open(name, O_CREAT | O_EXCL, 0644, size);
 		}
@@ -96,11 +94,16 @@ void	error_b(char *msg, t_data *data)
 {
 	if (data)
 	{
+		sem_close(data->p.now_eat_lock);
+		sem_close(data->p.now_times_eat_c);
 		sem_close(data->forks);
 		sem_close(data->write);
-		sem_unlink("/forks");
+		sem_close(data->check_dead_c);
+		sem_unlink("/now_times");
+		sem_unlink("/now_eat");
+		sem_unlink("/fork");
 		sem_unlink("/write");
-		sem_unlink("/death");
+		sem_unlink("/check_death");
 	}
 	ft_putstr_fd(msg, 2);
 	exit(1);

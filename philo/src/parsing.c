@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
+/*   By: lbohm <lbohm@student.42heilbronn.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 09:22:17 by lbohm             #+#    #+#             */
-/*   Updated: 2024/06/13 14:11:34 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/06/14 11:22:26 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ int	create_philos(t_data *data)
 	return (philo[i].next = data->philos, 0);
 }
 
-int	check_input(int argc, char **argv)
+int	check_input(int argc, char **argv, t_data *data)
 {
 	int	i;
 	int	j;
@@ -80,27 +80,27 @@ int	check_input(int argc, char **argv)
 			while (argv[i][j])
 			{
 				if ((int)argv[i][j] < '0' || (int)argv[i][j] > '9')
-					return (error(ERROR_3, NULL), 1);
+					return (error(ERROR_3, data), 1);
 				else if ((int)argv[i][0] == '0')
-					return (error(ERROR_3, NULL), 1);
+					return (error(ERROR_3, data), 1);
 				j++;
 			}
 			i++;
 		}
 	}
 	else
-		return (error(ERROR_0, NULL), 1);
+		return (error(ERROR_0, data), 1);
 	return (0);
 }
 
-void	error(char *msg, t_philos **philos)
+void	error(char *msg, t_data *data)
 {
-	if (philos)
-		clean_up(philos);
+	if (data)
+		clean_up(data);
 	ft_putstr_fd(msg, 2);
 }
 
-void	clean_up(t_philos **philos)
+void	clean_up(t_data *data)
 {
 	int			nbr_philos;
 	int			i;
@@ -108,19 +108,23 @@ void	clean_up(t_philos **philos)
 	t_philos	*next;
 
 	i = 0;
-	philo = *philos;
-	nbr_philos = philo->data->nbr_of_philos;
-	pthread_mutex_destroy(&philo->data->write);
-	pthread_mutex_destroy(&philo->data->check_dead_c);
-	while (nbr_philos > i)
+	if (data->philos)
 	{
-		next = philo->next;
-		pthread_mutex_destroy(&philo->fork);
-		pthread_mutex_destroy(&philo->now_eat_lock);
-		pthread_mutex_destroy(&philo->now_times_eat_c);
-		philo = next;
-		i++;
+		philo = data->philos;
+		nbr_philos = philo->data->nbr_of_philos;
+		pthread_mutex_destroy(&philo->data->write);
+		pthread_mutex_destroy(&philo->data->check_dead_c);
+		while (nbr_philos > i)
+		{
+			next = philo->next;
+			pthread_mutex_destroy(&philo->fork);
+			pthread_mutex_destroy(&philo->now_eat_lock);
+			pthread_mutex_destroy(&philo->now_times_eat_c);
+			philo = next;
+			i++;
+		}
+		free(data->philos);
 	}
-	free(philo->data);
-	free(*philos);
+	if (data)
+		free(data);
 }

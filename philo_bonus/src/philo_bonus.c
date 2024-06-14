@@ -6,7 +6,7 @@
 /*   By: lbohm <lbohm@student.42heilbronn.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 11:28:36 by lbohm             #+#    #+#             */
-/*   Updated: 2024/06/14 08:55:20 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/06/14 13:47:49 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,50 +26,26 @@ int	main(int argc, char **argv)
 void	start_processes(t_data *data)
 {
 	int			i;
-	pthread_t	*threads;
+	pid_t		pid;
+	int			ids[201];
 
 	i = 0;
 	data->p = create_philo_b(data);
 	data->start = get_time_b();
-	threads = (pthread_t *)malloc (sizeof(pthread_t) * data->nbr_of_philos);
-	if (!threads)
-		error_b(ERROR_2, data);
 	while (data->nbr_of_philos > i)
 	{
-		data->p.nbr_philo = i + 1;
-		pthread_create(&threads[i], NULL, child, data);
-		i++;
+		pid = fork();
+		if (pid < 0)
+			error_b(ERROR_5, data);
+		if (pid == 0)
+			dining_room_b(data, i + 1);
+		if (pid > 0)
+		{
+			ids[i] = pid;
+			i++;
+		}
 	}
-	i = 0;
-	while (data->nbr_of_philos > i)
-	{
-		pthread_join(threads[i], NULL);
-		i++;
-	}
-	free(threads);
-	wait_for_processes(data, data->nbr_of_philos);
-}
-
-void	*child(void *data)
-{
-	t_data		*d;
-	static int	i = 0;
-	pid_t		pid;
-
-	d = (t_data *)data;
-	sem_wait(d->test);
-	pid = fork();
-	if (pid < 0)
-		error_b(ERROR_5, d);
-	if (pid == 0)
-		dining_room_b(d, i + 1);
-	if (pid > 0)
-	{
-		d->ids[i] = pid;
-		i++;
-	}
-	sem_post(d->test);
-	return (NULL);
+	wait_for_processes(data, ids);
 }
 
 void	dining_room_b(t_data *d, int i)
@@ -92,7 +68,8 @@ void	dining_room_b(t_data *d, int i)
 		d->p.now_times_eat++;
 		sem_post(d->p.now_times_eat_c);
 	}
-	pthread_join(d->p.check, NULL);
+	pthread_detach(d->p.check);
+	clean_up_b(d);
 	exit(d->check_dead);
 }
 
@@ -111,17 +88,17 @@ void	take_forks_and_eat_b(t_data *data)
 	sem_post(data->p.now_eat_lock);
 }
 
-void	wait_for_processes(t_data *data, int nbr_of_philos)
+void	wait_for_processes(t_data *data, int *ids)
 {
 	int	i;
 	int	status;
 
 	i = 0;
-	while (nbr_of_philos > i)
+	while (data->nbr_of_philos > i)
 	{
 		waitpid(-1, &status, 0);
 		if (WEXITSTATUS(status))
-			kill_processes(data);
+			kill_processes(data, ids);
 		i++;
 	}
 }
