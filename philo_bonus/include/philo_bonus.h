@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo_bonus.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
+/*   By: lbohm <lbohm@student.42heilbronn.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 11:29:09 by lbohm             #+#    #+#             */
-/*   Updated: 2024/06/12 17:30:06 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/06/14 08:49:51 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ typedef struct s_philos
 	int					nbr_philo;
 	int					pid;
 	sem_t				*now_eat_lock;
+	sem_t				*now_times_eat_c;
 }				t_philos;
 
 typedef struct s_data
@@ -52,7 +53,6 @@ typedef struct s_data
 	sem_t			*forks;
 	sem_t			*write;
 	sem_t			*check_dead_c;
-	sem_t			*now_times_eat_c;
 	sem_t			*test;
 	struct s_philos	p;
 }				t_data;
@@ -68,7 +68,7 @@ long		check_with_sem_2(t_philos *p);
 
 void		check_input_b(int argc, char **argv);
 void		parsing_b(int argc, char **argv, t_data *data);
-sem_t		*create_sem(sem_t *sem, char *name, int size, t_data *data);
+sem_t		*create_sem(char *name, int size, t_data *data);
 t_philos	create_philo_b(t_data *data);
 void		error_b(char *msg, t_data *data);
 void		*child(void *data);

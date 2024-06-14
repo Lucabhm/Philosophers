@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_bonus.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
+/*   By: lbohm <lbohm@student.42heilbronn.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 09:22:17 by lbohm             #+#    #+#             */
-/*   Updated: 2024/06/12 17:29:53 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/06/14 08:49:45 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,15 +27,16 @@ void	parsing_b(int argc, char **argv, t_data *data)
 	data->ids = (int *)malloc (sizeof(int) * data->nbr_of_philos);
 	if (!data->ids)
 		error_b(ERROR_2, data);
-	data->forks = create_sem(data->forks, "/fork", data->nbr_of_philos, data);
-	data->write = create_sem(data->write, "/write", 1, data);
-	data->check_dead_c = create_sem(data->check_dead_c, "/check_death", 1, data);
-	data->now_times_eat_c = create_sem(data->now_times_eat_c, "/now_times", 1, data);
-	data->test = create_sem(data->test, "/test", 1, data);
+	data->forks = create_sem("/fork", data->nbr_of_philos, data);
+	data->write = create_sem("/write", 1, data);
+	data->check_dead_c = create_sem("/check_death", 1, data);
+	data->test = create_sem("/test", 1, data);
 }
 
-sem_t	*create_sem(sem_t *sem, char *name, int size, t_data *data)
+sem_t	*create_sem(char *name, int size, t_data *data)
 {
+	sem_t	*sem;
+
 	sem = sem_open(name, O_CREAT | O_EXCL, 0644, size);
 	if (sem == SEM_FAILED)
 	{
@@ -86,7 +87,8 @@ t_philos	create_philo_b(t_data *data)
 	philo.now_death.tv_sec = 0;
 	philo.now_death.tv_usec = 0;
 	philo.now_times_eat = 0;
-	philo.now_eat_lock = create_sem(philo.now_eat_lock, "/now_eat", 1, data);
+	philo.now_eat_lock = create_sem("/now_eat", 1, data);
+	philo.now_times_eat_c = create_sem("/now_times", 1, data);
 	return (philo);
 }
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo_bonus.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
+/*   By: lbohm <lbohm@student.42heilbronn.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 11:28:36 by lbohm             #+#    #+#             */
-/*   Updated: 2024/06/13 16:38:14 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/06/14 08:55:20 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,9 +88,9 @@ void	dining_room_b(t_data *d, int i)
 		take_forks_and_eat_b(d);
 		msg_sleeping_b(d);
 		waiting_room_b(d->time_to_sleep, d);
-		sem_wait(d->now_times_eat_c);
+		sem_wait(d->p.now_times_eat_c);
 		d->p.now_times_eat++;
-		sem_post(d->now_times_eat_c);
+		sem_post(d->p.now_times_eat_c);
 	}
 	pthread_join(d->p.check, NULL);
 	exit(d->check_dead);

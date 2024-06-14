@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   msgs_bonus.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lucabohn <lucabohn@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 16:46:15 by lbohm             #+#    #+#             */
-/*   Updated: 2024/06/13 22:22:03 by lucabohn         ###   ########.fr       */
+/*   Updated: 2024/06/14 09:35:42 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	msg_thinking_b(t_data *data)
 {
-	const char *format;
+	const char	*format;
 
 	format = "%ld %i is thinking\n";
 	sem_wait(data->write);
@@ -25,7 +25,7 @@ void	msg_thinking_b(t_data *data)
 
 void	msg_eating_b(t_data *data)
 {
-	const char *format;
+	const char	*format;
 
 	format = "%ld %i is eating\n";
 	sem_wait(data->write);
@@ -36,7 +36,7 @@ void	msg_eating_b(t_data *data)
 
 void	msg_sleeping_b(t_data *data)
 {
-	const char *format;
+	const char	*format;
 
 	format = "%ld %i is sleeping\n";
 	sem_wait(data->write);
@@ -47,7 +47,7 @@ void	msg_sleeping_b(t_data *data)
 
 void	msg_dead_b(t_data *data)
 {
-	const char *format;
+	const char	*format;
 
 	format = "%ld %i died\n";
 	sem_wait(data->write);
@@ -58,7 +58,7 @@ void	msg_dead_b(t_data *data)
 
 void	msg_fork_b(t_data *data)
 {
-	const char *format;
+	const char	*format;
 
 	format = "%ld %i has taken a fork\n";
 	sem_wait(data->write);

@@ -6,7 +6,7 @@
 /*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 11:43:45 by lbohm             #+#    #+#             */
-/*   Updated: 2024/06/12 18:01:29 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/06/14 10:28:51 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,9 +54,9 @@ int	check_with_sem(t_data *data, int check)
 	}
 	if (check == 2)
 	{
-		sem_wait(data->now_times_eat_c);
+		sem_wait(data->p.now_times_eat_c);
 		ret = data->p.now_times_eat;
-		sem_post(data->now_times_eat_c);
+		sem_post(data->p.now_times_eat_c);
 	}
 	return (ret);
 }

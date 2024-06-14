@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_bonus.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
+/*   By: lbohm <lbohm@student.42heilbronn.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 11:18:41 by lbohm             #+#    #+#             */
-/*   Updated: 2024/06/12 17:09:50 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/06/14 08:57:14 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,7 @@ long	calc_time_b(t_data *data)
 
 void	clean_up_b(t_data *data)
 {
+	free(data->ids);
 	sem_close(data->forks);
 	sem_close(data->write);
 	sem_unlink("/forks");
