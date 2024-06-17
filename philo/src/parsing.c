@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lbohm <lbohm@student.42heilbronn.de>       +#+  +:+       +#+        */
+/*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 09:22:17 by lbohm             #+#    #+#             */
-/*   Updated: 2024/06/14 11:22:26 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/06/17 13:29:53 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,8 @@ int	check_input(int argc, char **argv, t_data *data)
 		while (argc > i)
 		{
 			j = 0;
+			if (check_max_min_b(argv[i]))
+				return (error(ERROR_5, data), 1);
 			while (argv[i][j])
 			{
 				if ((int)argv[i][j] < '0' || (int)argv[i][j] > '9')
@@ -91,13 +93,6 @@ int	check_input(int argc, char **argv, t_data *data)
 	else
 		return (error(ERROR_0, data), 1);
 	return (0);
-}
-
-void	error(char *msg, t_data *data)
-{
-	if (data)
-		clean_up(data);
-	ft_putstr_fd(msg, 2);
 }
 
 void	clean_up(t_data *data)
@@ -127,4 +122,19 @@ void	clean_up(t_data *data)
 	}
 	if (data)
 		free(data);
+}
+
+int	check_max_min_b(char *str)
+{
+	int	nbr;
+	int	strnbr;
+
+	nbr = ft_strlen(str);
+	strnbr = ft_atoi(str);
+	if ((nbr == 11 && str[0] == '-' && strnbr > 0)
+		|| (nbr > 11 && str[0] == '-')
+		|| (nbr == 10 && str[0] != '-' && strnbr < 0)
+		|| (nbr > 10 && str[0] != '-'))
+		return (1);
+	return (0);
 }

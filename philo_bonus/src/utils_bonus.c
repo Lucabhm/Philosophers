@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_bonus.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lbohm <lbohm@student.42heilbronn.de>       +#+  +:+       +#+        */
+/*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 11:18:41 by lbohm             #+#    #+#             */
-/*   Updated: 2024/06/17 09:15:12 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/06/17 13:12:39 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,38 +67,17 @@ long	calc_time_b(t_data *data)
 	return (now - data->start);
 }
 
-void	clean_up_child(t_data *data)
+int	check_max_min_b(char *str)
 {
-	sem_close(data->p.now_eat_lock);
-	sem_close(data->p.now_times_eat_c);
-	sem_close(data->forks);
-	sem_close(data->write);
-	sem_close(data->check_dead_c);
-}
+	int	nbr;
+	int	strnbr;
 
-void	clean_up_b(t_data *data)
-{
-	free(data->checker);
-	sem_close(data->p.now_eat_lock);
-	sem_close(data->p.now_times_eat_c);
-	sem_close(data->forks);
-	sem_close(data->write);
-	sem_close(data->check_dead_c);
-	sem_unlink("/now_times");
-	sem_unlink("/now_eat");
-	sem_unlink("/fork");
-	sem_unlink("/write");
-	sem_unlink("/check_death");
-}
-
-void	kill_processes(t_data *data, int *ids)
-{
-	int	i;
-
-	i = 0;
-	while (data->nbr_of_philos > i)
-	{
-		kill(ids[i], SIGKILL);
-		i++;
-	}
+	nbr = ft_strlen(str);
+	strnbr = ft_atoi(str);
+	if ((nbr == 11 && str[0] == '-' && strnbr > 0)
+		|| (nbr > 11 && str[0] == '-')
+		|| (nbr == 10 && str[0] != '-' && strnbr < 0)
+		|| (nbr > 10 && str[0] != '-'))
+		return (1);
+	return (0);
 }

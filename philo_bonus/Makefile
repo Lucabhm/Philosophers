@@ -14,7 +14,7 @@ VPATH = src/
 
 SRCS = philo_bonus.c \
 		parsing_bonus.c \
-		monitoring_bonus.c \
+		utils_bonus_2.c \
 		utils_bonus.c \
 		msgs_bonus.c
 OBJS = $(SRCS:.c=.o)

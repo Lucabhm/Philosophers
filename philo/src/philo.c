@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lbohm <lbohm@student.42heilbronn.de>       +#+  +:+       +#+        */
+/*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 12:06:23 by lbohm             #+#    #+#             */
-/*   Updated: 2024/06/14 11:16:59 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/06/17 13:28:01 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,4 +98,11 @@ void	take_forks_and_eat(t_philos *p,
 	pthread_mutex_lock(&p->now_times_eat_c);
 	p->now_times_eat++;
 	pthread_mutex_unlock(&p->now_times_eat_c);
+}
+
+void	error(char *msg, t_data *data)
+{
+	if (data)
+		clean_up(data);
+	ft_putstr_fd(msg, 2);
 }

@@ -6,7 +6,7 @@
 /*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 09:22:17 by lbohm             #+#    #+#             */
-/*   Updated: 2024/06/17 10:27:16 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/06/17 13:22:06 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,14 +25,9 @@ void	parsing_b(int argc, char **argv, t_data *data)
 	else
 		data->max_eat = 0;
 	data->start = 0;
-	data->check_dead = 0;
 	data->ids = NULL;
 	data->forks = create_sem("/fork", data->nbr_of_philos, data);
 	data->write = create_sem("/write", 1, data);
-	data->check_dead_c = create_sem("/check_death", 1, data);
-	data->checker = (pthread_t *)malloc (sizeof(pthread_t) * data->nbr_of_philos);
-	if (!data->checker)
-		error_b(ERROR_2, data);
 }
 
 sem_t	*create_sem(char *name, int size, t_data *data)
@@ -64,6 +59,8 @@ void	check_input_b(int argc, char **argv)
 		while (argc > i)
 		{
 			j = 0;
+			if (check_max_min_b(argv[i]))
+				error_b(ERROR_8, NULL);
 			while (argv[i][j])
 			{
 				if ((int)argv[i][j] < '0' || (int)argv[i][j] > '9')
@@ -79,17 +76,13 @@ void	check_input_b(int argc, char **argv)
 		error_b(ERROR_0, NULL);
 }
 
-t_philos	create_philo_b(t_data *data)
+t_philos	create_philo_b(void)
 {
 	t_philos	philo;
 
 	philo.nbr_philo = 0;
 	philo.now_eat = 0;
-	philo.now_death.tv_sec = 0;
-	philo.now_death.tv_usec = 0;
 	philo.now_times_eat = 0;
-	philo.now_eat_lock = create_sem("/now_eat", 1, data);
-	philo.now_times_eat_c = create_sem("/now_times", 1, data);
 	return (philo);
 }
 
@@ -97,16 +90,10 @@ void	error_b(char *msg, t_data *data)
 {
 	if (data)
 	{
-		sem_close(data->p.now_eat_lock);
-		sem_close(data->p.now_times_eat_c);
 		sem_close(data->forks);
 		sem_close(data->write);
-		sem_close(data->check_dead_c);
-		sem_unlink("/now_times");
-		sem_unlink("/now_eat");
 		sem_unlink("/fork");
 		sem_unlink("/write");
-		sem_unlink("/check_death");
 	}
 	ft_putstr_fd(msg, 2);
 	exit(1);

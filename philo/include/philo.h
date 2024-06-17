@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lbohm <lbohm@student.42heilbronn.de>       +#+  +:+       +#+        */
+/*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 12:06:31 by lbohm             #+#    #+#             */
-/*   Updated: 2024/06/14 11:01:17 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/06/17 13:29:36 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,14 +55,15 @@ void			*check_for_death(void *philo);
 void			waiting_room(int time_to_wait, t_philos *p);
 int				check_with_mutex(t_philos *p, int check);
 long			check_with_mutex_2(t_philos *p);
+size_t			ft_strlen(const char *str);
 
 // parsing
 
 int				check_input(int argc, char **argv, t_data *data);
 int				parsing(int argc, char **argv, t_data *data);
 int				create_philos(t_data *data);
-void			error(char *msg, t_data *data);
 void			clean_up(t_data *data);
+int				check_max_min_b(char *str);
 
 // philo
 
@@ -71,6 +72,7 @@ int				start_threads(t_data *data);
 void			*dining_room(void *philo);
 void			take_forks_and_eat(t_philos *p,
 					pthread_mutex_t *fork1, pthread_mutex_t *fork2);
+void			error(char *msg, t_data *data);
 
 // utils
 
@@ -95,5 +97,6 @@ void			msg_dead(t_philos *p);
 # define ERROR_2 "Allocation failed\n"
 # define ERROR_3 "Invalid argument\n"
 # define ERROR_4 "Thread creation failed\n"
+# define ERROR_5 "Value is bigger or smaller than an int\n"
 
 #endif

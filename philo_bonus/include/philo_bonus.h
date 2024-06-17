@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo_bonus.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lbohm <lbohm@student.42heilbronn.de>       +#+  +:+       +#+        */
+/*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 11:29:09 by lbohm             #+#    #+#             */
-/*   Updated: 2024/06/17 09:15:53 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/06/17 13:23:23 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,14 +30,9 @@
 
 typedef struct s_philos
 {
-	pthread_t			check;
-	struct timeval		now_death;
 	long				now_eat;
 	int					now_times_eat;
 	int					nbr_philo;
-	int					pid;
-	sem_t				*now_eat_lock;
-	sem_t				*now_times_eat_c;
 }				t_philos;
 
 typedef struct s_data
@@ -47,29 +42,27 @@ typedef struct s_data
 	int				time_to_eat;
 	int				time_to_sleep;
 	int				max_eat;
-	int				check_dead;
 	int				*ids;
 	long			start;
 	sem_t			*forks;
 	sem_t			*write;
-	sem_t			*check_dead_c;
-	pthread_t		*checker;
 	struct s_philos	p;
 }				t_data;
 
-// monitoring_bonus
+// utils_bonus_2
 
-void		*check_for_death_b(void *philo);
 void		waiting_room_b(int time_to_wait, t_data *data);
-int			check_with_sem(t_data *data, int check);
-long		check_with_sem_2(t_philos *p);
+void		clean_up_child(t_data *data);
+void		clean_up_b(t_data *data);
+void		kill_processes(t_data *data, int *ids);
+size_t		ft_strlen(const char *str);
 
 // parsing_bonus
 
 void		check_input_b(int argc, char **argv);
 void		parsing_b(int argc, char **argv, t_data *data);
 sem_t		*create_sem(char *name, int size, t_data *data);
-t_philos	create_philo_b(t_data *data);
+t_philos	create_philo_b(void);
 void		error_b(char *msg, t_data *data);
 
 // philo_bonus
@@ -86,9 +79,7 @@ void		ft_putstr_fd(char *s, int fd);
 int			ft_atoi(const char *ascii);
 long		get_time_b(void);
 long		calc_time_b(t_data *data);
-void		clean_up_child(t_data *data);
-void		clean_up_b(t_data *data);
-void		kill_processes(t_data *data, int *ids);
+int			check_max_min_b(char *str);
 
 // msgs_bonus
 
@@ -108,5 +99,6 @@ void		msg_fork_b(t_data *data);
 # define ERROR_5 "fork failed\n"
 # define ERROR_6 "sem failed\n"
 # define ERROR_7 "Too many philos\n"
+# define ERROR_8 "Value is bigger or smaller than an int\n"
 
 #endif

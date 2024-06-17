@@ -6,7 +6,7 @@
 /*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 13:41:27 by lbohm             #+#    #+#             */
-/*   Updated: 2024/06/13 15:45:47 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/06/17 13:26:26 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,4 +75,14 @@ long	check_with_mutex_2(t_philos *p)
 	ret = p->now_eat;
 	pthread_mutex_unlock(&p->now_eat_lock);
 	return (ret);
+}
+
+size_t	ft_strlen(const char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i] != '\0')
+		i++;
+	return (i);
 }

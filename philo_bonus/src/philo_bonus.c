@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo_bonus.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lbohm <lbohm@student.42heilbronn.de>       +#+  +:+       +#+        */
+/*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 11:28:36 by lbohm             #+#    #+#             */
-/*   Updated: 2024/06/17 09:16:07 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/06/17 12:50:56 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ void	start_processes(t_data *data)
 	int			ids[201];
 
 	i = 0;
-	data->p = create_philo_b(data);
+	data->p = create_philo_b();
 	data->start = get_time_b();
 	while (data->nbr_of_philos > i)
 	{
@@ -52,25 +52,20 @@ void	dining_room_b(t_data *d, int i)
 {
 	d->p.nbr_philo = i;
 	d->p.now_eat = d->start;
-	pthread_create(&d->checker[i - 1], NULL, check_for_death_b, d);
 	if (d->nbr_of_philos == 1)
 		waiting_room_b(d->time_to_die + 1, d);
 	if (d->p.nbr_philo % 2 != 0)
 		waiting_room_b(d->time_to_eat / 2, d);
-	while ((d->max_eat == 0 || d->max_eat > check_with_sem(d, 2))
-		&& !check_with_sem(d, 1))
+	while ((d->max_eat == 0 || d->max_eat > d->p.now_times_eat))
 	{
 		msg_thinking_b(d);
 		take_forks_and_eat_b(d);
 		msg_sleeping_b(d);
 		waiting_room_b(d->time_to_sleep, d);
-		sem_wait(d->p.now_times_eat_c);
 		d->p.now_times_eat++;
-		sem_post(d->p.now_times_eat_c);
 	}
-	pthread_detach(d->checker[i - 1]);
 	clean_up_child(d);
-	exit(d->check_dead);
+	exit(0);
 }
 
 void	take_forks_and_eat_b(t_data *data)
@@ -83,9 +78,7 @@ void	take_forks_and_eat_b(t_data *data)
 	waiting_room_b(data->time_to_eat, data);
 	sem_post(data->forks);
 	sem_post(data->forks);
-	sem_wait(data->p.now_eat_lock);
 	data->p.now_eat = get_time_b();
-	sem_post(data->p.now_eat_lock);
 }
 
 void	wait_for_processes(t_data *data, int *ids)
