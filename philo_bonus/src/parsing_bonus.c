@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_bonus.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lbohm <lbohm@student.42heilbronn.de>       +#+  +:+       +#+        */
+/*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 09:22:17 by lbohm             #+#    #+#             */
-/*   Updated: 2024/06/14 13:54:45 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/06/17 10:27:16 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,9 @@ void	parsing_b(int argc, char **argv, t_data *data)
 	data->forks = create_sem("/fork", data->nbr_of_philos, data);
 	data->write = create_sem("/write", 1, data);
 	data->check_dead_c = create_sem("/check_death", 1, data);
+	data->checker = (pthread_t *)malloc (sizeof(pthread_t) * data->nbr_of_philos);
+	if (!data->checker)
+		error_b(ERROR_2, data);
 }
 
 sem_t	*create_sem(char *name, int size, t_data *data)

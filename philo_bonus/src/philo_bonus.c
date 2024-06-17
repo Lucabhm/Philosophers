@@ -6,7 +6,7 @@
 /*   By: lbohm <lbohm@student.42heilbronn.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 11:28:36 by lbohm             #+#    #+#             */
-/*   Updated: 2024/06/14 13:47:49 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/06/17 09:16:07 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ void	dining_room_b(t_data *d, int i)
 {
 	d->p.nbr_philo = i;
 	d->p.now_eat = d->start;
-	pthread_create(&d->p.check, NULL, check_for_death_b, d);
+	pthread_create(&d->checker[i - 1], NULL, check_for_death_b, d);
 	if (d->nbr_of_philos == 1)
 		waiting_room_b(d->time_to_die + 1, d);
 	if (d->p.nbr_philo % 2 != 0)
@@ -68,8 +68,8 @@ void	dining_room_b(t_data *d, int i)
 		d->p.now_times_eat++;
 		sem_post(d->p.now_times_eat_c);
 	}
-	pthread_detach(d->p.check);
-	clean_up_b(d);
+	pthread_detach(d->checker[i - 1]);
+	clean_up_child(d);
 	exit(d->check_dead);
 }
 
