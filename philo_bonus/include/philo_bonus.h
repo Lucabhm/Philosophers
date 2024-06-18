@@ -6,7 +6,7 @@
 /*   By: lbohm <lbohm@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 11:29:09 by lbohm             #+#    #+#             */
-/*   Updated: 2024/06/17 13:23:23 by lbohm            ###   ########.fr       */
+/*   Updated: 2024/06/18 10:27:34 by lbohm            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,6 @@
 # include <sys/time.h>
 # include <pthread.h>
 # include <semaphore.h>
-# include <sys/types.h>
-# include <sys/wait.h>
-# include <fcntl.h>
 # include <signal.h>
 # include <errno.h>
 
@@ -59,9 +56,9 @@ size_t		ft_strlen(const char *str);
 
 // parsing_bonus
 
-void		check_input_b(int argc, char **argv);
 void		parsing_b(int argc, char **argv, t_data *data);
 sem_t		*create_sem(char *name, int size, t_data *data);
+void		check_input_b(int argc, char **argv);
 t_philos	create_philo_b(void);
 void		error_b(char *msg, t_data *data);
 
